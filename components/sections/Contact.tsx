@@ -31,7 +31,7 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+
     // Simulate form submission
     setTimeout(() => {
       alert('Thank you for your message! I will get back to you soon.')
@@ -50,6 +50,7 @@ export default function Contact() {
   return (
     <Section id="contact" title="Get In Touch" subtitle="Let's Connect">
       <div ref={ref} className="grid md:grid-cols-2 gap-8">
+        
         {/* Left: Contact Info */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -133,6 +134,7 @@ export default function Contact() {
           <Card className="h-full" glow>
             <h3 className="text-2xl font-bold mb-6 gradient-text">Send a Message</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
+              
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                   Name
@@ -184,8 +186,8 @@ export default function Contact() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full flex items-center justify-center gap-2"
                 disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2"
               >
                 <Send size={20} />
                 {isSubmitting ? 'Sending...' : 'Send Message'}
@@ -193,9 +195,8 @@ export default function Contact() {
             </form>
           </Card>
         </motion.div>
+
       </div>
     </Section>
   )
 }
-
-
