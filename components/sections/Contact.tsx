@@ -50,7 +50,6 @@ export default function Contact() {
   return (
     <Section id="contact" title="Get In Touch" subtitle="Let's Connect">
       <div ref={ref} className="grid md:grid-cols-2 gap-8">
-        
         {/* Left: Contact Info */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -70,7 +69,10 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-gray-400 text-sm">Email</p>
-                  <a href="mailto:rohit.bhanose@gmail.com" className="text-white hover:text-accent transition-colors">
+                  <a
+                    href="mailto:rohit.bhanose@gmail.com"
+                    className="text-white hover:text-accent transition-colors"
+                  >
                     rohit.bhanose@gmail.com
                   </a>
                 </div>
@@ -134,7 +136,6 @@ export default function Contact() {
           <Card className="h-full" glow>
             <h3 className="text-2xl font-bold mb-6 gradient-text">Send a Message</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
-              
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                   Name
@@ -195,7 +196,6 @@ export default function Contact() {
             </form>
           </Card>
         </motion.div>
-
       </div>
     </Section>
   )
