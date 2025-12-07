@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "deploy:pages": "npx wrangler pages deploy ./out --project-name=rohit-portfolio --branch=main"
