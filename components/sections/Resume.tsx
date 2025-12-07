@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button'
 
 export default function Resume() {
   const [showResume, setShowResume] = useState(false)
-  
+
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -30,8 +30,8 @@ export default function Resume() {
                 <FileText className="text-white" size={40} />
               </div>
               <h3 className="text-3xl font-bold mb-4 gradient-text">Rohit Bhanose</h3>
-              <p className="text-gray-300 text-lg mb-2">CSE AI & DS Engineering Student</p>
-              <p className="text-gray-400 text-sm">MIT World Peace University & IIT Madras</p>
+              <p className="text-gray-300 text-lg mb-2">CSE AI &amp; DS Engineering Student</p>
+              <p className="text-gray-400 text-sm">MIT World Peace University &amp; IIT Madras</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4 mb-8">
@@ -102,18 +102,18 @@ export default function Resume() {
 
       {/* POPUP MODAL */}
       {showResume && (
-        <div 
+        <div
           className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           onClick={() => setShowResume(false)}
         >
-          <div 
+          <div
             className="relative w-full max-w-6xl bg-white rounded-xl overflow-hidden flex flex-col max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b bg-white">
               <h2 className="text-xl font-bold text-gray-800">Resume Preview</h2>
-              <button 
+              <button
                 onClick={() => setShowResume(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
               >
@@ -124,25 +124,23 @@ export default function Resume() {
             {/* Scrollable Images Area */}
             <div className="flex-1 overflow-y-auto p-6 bg-gray-100">
               <div className="flex flex-col md:flex-row justify-center gap-4">
-                {/* Page 1 - .png matched to your folder */}
-                <img 
-                  src="/resume-1.png" 
-                  alt="Resume Page 1" 
-                  className="w-full md:w-[48%] shadow-lg rounded-sm object-contain bg-white" 
+                <img
+                  src="/resume-1.png"
+                  alt="Resume Page 1"
+                  className="w-full md:w-[48%] shadow-lg rounded-sm object-contain bg-white"
                 />
-                {/* Page 2 - .png matched to your folder */}
-                <img 
-                  src="/resume-2.png" 
-                  alt="Resume Page 2" 
-                  className="w-full md:w-[48%] shadow-lg rounded-sm object-contain bg-white" 
+                <img
+                  src="/resume-2.png"
+                  alt="Resume Page 2"
+                  className="w-full md:w-[48%] shadow-lg rounded-sm object-contain bg-white"
                 />
               </div>
             </div>
 
             {/* Footer */}
             <div className="p-4 border-t bg-white flex justify-end">
-              <a 
-                href="/resume.pdf" 
+              <a
+                href="/resume.pdf"
                 download="Rohit_Bhanose_Resume.pdf"
                 className="flex items-center gap-2 bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
               >
@@ -153,7 +151,6 @@ export default function Resume() {
           </div>
         </div>
       )}
-
     </Section>
   )
 }
