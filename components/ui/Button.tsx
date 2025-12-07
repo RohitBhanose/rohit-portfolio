@@ -8,6 +8,7 @@ type ButtonBaseProps = {
   variant?: 'primary' | 'secondary' | 'outline'
   size?: 'sm' | 'md' | 'lg'
   className?: string
+  disabled?: boolean
 }
 
 // All button props (no href)
@@ -56,14 +57,14 @@ export default function Button(props: ButtonProps) {
 
   // If href exists, render as <a>
   if ('href' in props && props.href) {
-    const { href, ...anchorRest } = rest as AnchorButtonProps
+    const { href, ...anchorRest } = rest as Omit<AnchorButtonProps, 'children' | 'variant' | 'size' | 'className'>
 
     return (
       <motion.a
         href={disabled ? undefined : href}
         className={`${commonClass} ${disabled ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}`}
         aria-disabled={disabled}
-        {...motionProps}
+        {...(motionProps as any)}
         {...anchorRest}
       >
         <span className="relative z-10">{children}</span>
@@ -76,7 +77,7 @@ export default function Button(props: ButtonProps) {
   }
 
   // Otherwise render as <button>
-  const buttonRest = rest as RealButtonProps
+  const buttonRest = rest as Omit<RealButtonProps, 'children' | 'variant' | 'size' | 'className'>
 
   return (
     <motion.button
@@ -84,7 +85,7 @@ export default function Button(props: ButtonProps) {
       disabled={disabled}
       aria-disabled={disabled}
       className={`${commonClass} ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
-      {...motionProps}
+      {...(motionProps as any)}
       {...buttonRest}
     >
       <span className="relative z-10">{children}</span>
