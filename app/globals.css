@@ -201,31 +201,40 @@
     @apply mx-auto w-full max-w-page px-gutter;
   }
 
-  /* Buttons: physical press, colour on hover (pointer devices only). */
+  /* Buttons are cut like sign plates: a small radius and a solid ink edge.
+   * Hover deepens the colour and the edge; a press settles the plate by a pixel. */
   .btn {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-small font-semibold;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 px-6 font-semibold;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    letter-spacing: 0.005em;
     transition:
-      transform 160ms var(--ease-out),
-      background-color 150ms ease,
-      border-color 150ms ease,
-      color 150ms ease;
+      transform var(--dur-instant) var(--ease-out),
+      background-color var(--dur-fast) ease,
+      box-shadow var(--dur-fast) ease,
+      color var(--dur-fast) ease;
   }
   .btn:active {
-    transform: scale(0.97);
+    transform: translateY(1px);
   }
   .btn-primary {
-    @apply bg-signal text-on-signal;
+    background: rgb(var(--signal));
+    color: rgb(var(--on-signal));
+    box-shadow:
+      inset 0 0 0 1.5px rgb(var(--on-signal) / 0.9),
+      0 1px 0 rgb(var(--on-signal) / 0.4);
   }
   .btn-secondary {
-    @apply border border-line-strong text-ink;
+    color: rgb(var(--ink));
+    box-shadow: inset 0 0 0 1.5px rgb(var(--ink) / 0.85);
   }
   @media (hover: hover) and (pointer: fine) {
     .btn-primary:hover {
-      background-color: rgb(var(--ink));
-      color: rgb(var(--bg));
+      background: #f2b40c;
     }
     .btn-secondary:hover {
-      border-color: rgb(var(--ink));
+      background: rgb(var(--ink) / 0.06);
+      box-shadow: inset 0 0 0 1.5px rgb(var(--ink));
     }
   }
 
@@ -664,9 +673,14 @@
   border-top: 2px solid rgb(var(--ink));
   border-bottom: 1px solid rgb(var(--line));
 }
+/* Fixed columns, so a strip with two facts keeps them at the left instead of spreading them out. */
 @media (min-width: 768px) {
   .facts-strip {
-    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  /* The flagship's role is a full line, so it takes two columns. */
+  .stop-flagship .facts-strip > div:first-child {
+    grid-column: span 2;
   }
 }
 .facts-strip > div {
@@ -717,36 +731,7 @@
 }
 .highlight {
   padding-left: 1rem;
-  border-left: 2px solid rgb(var(--line-strong));
-}
-.notice {
-  padding: 0.6rem 0.9rem;
-  border-left: 3px solid rgb(var(--ink));
-  border-radius: 0 0.5rem 0.5rem 0;
-  background: rgb(var(--signal) / 0.2);
-  font-size: 0.9375rem;
-}
-.more summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 2.75rem;
-  border-top: 1px solid rgb(var(--line));
-  font-weight: 600;
-  cursor: pointer;
-  list-style: none;
-}
-.more summary::-webkit-details-marker {
-  display: none;
-}
-.more summary::after {
-  content: '+';
-  font-size: 1.25rem;
-  line-height: 1;
-  transition: transform var(--dur-base) var(--ease-out);
-}
-.more[open] summary::after {
-  transform: rotate(45deg);
+  border-left: 2px solid rgb(var(--ink));
 }
 .stop-next {
   margin-top: 1.25rem;
@@ -766,16 +751,14 @@
   background: rgb(var(--signal));
   box-shadow: inset 0 0 0 1.5px rgb(var(--on-signal) / 0.85);
   color: rgb(var(--on-signal));
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.2;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 .board .flag-plate {
-  padding: 0.15rem 0.4rem;
-  font-size: 0.6875rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.75rem;
 }
 /* On the board the flagship row is lit a little and its name a step larger; the row stays one line taller at most. */
 .board-row[data-flagship] {
@@ -797,8 +780,8 @@
 
 .areas {
   display: grid;
-  gap: 1.25rem;
-  margin: 0;
+  gap: 2rem 2.5rem;
+  margin: 1.75rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -812,63 +795,10 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+/* Each area hangs from a short ink rule, like the bar on a direction sign. */
 .area {
-  position: relative;
-  display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  align-items: center;
-  align-content: start;
-  column-gap: 0.75rem;
-  padding: 1.1rem 1.2rem 1.25rem;
-  border-radius: 0.75rem;
-  background: rgb(var(--surface));
-  box-shadow: inset 0 0 0 1px rgb(var(--line));
-}
-.area-no {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.4rem;
-  background: rgb(var(--ink));
-  color: rgb(var(--bg));
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1;
-}
-/* The lane between neighbouring areas: down the gap on phones, across it where the areas sit side by side.
- * It never crosses a row break, so it only ever joins cards that are next to each other. */
-.area::after {
-  position: absolute;
-  top: 100%;
-  left: calc(2.2rem - 1.5px);
-  width: 3px;
-  height: 1.25rem;
-  background: repeating-linear-gradient(to bottom, rgb(var(--mark) / 0.55) 0 5px, transparent 5px 9px);
-}
-.area:not(:last-child)::after {
-  content: '';
-}
-@media (min-width: 640px) {
-  .area::after {
-    top: calc(2.1rem - 1.5px);
-    left: 100%;
-    width: 1.25rem;
-    height: 3px;
-    background: repeating-linear-gradient(90deg, rgb(var(--mark) / 0.55) 0 5px, transparent 5px 9px);
-  }
-  .area:nth-child(2n)::after {
-    content: none;
-  }
-}
-@media (min-width: 1024px) {
-  .area:nth-child(2n):not(:last-child)::after {
-    content: '';
-  }
-  .area:nth-child(3n)::after {
-    content: none;
-  }
+  padding-top: 1rem;
+  border-top: 2px solid rgb(var(--ink));
 }
 
 .idea {
@@ -894,13 +824,6 @@
     column-gap: 3rem;
     align-items: start;
   }
-}
-.idea-title {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgb(var(--signal));
 }
 .idea-loop {
   position: relative;
@@ -955,50 +878,41 @@
     top: -1.75rem;
   }
 }
-html:not(.js) .demo-note {
-  display: none;
-}
 
+/* ParkIT's view switch: two plates in one frame; the chosen one is filled with ink. */
 .segmented {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 2px;
+  gap: 3px;
   padding: 3px;
-  border-radius: 1.5rem;
-  background: rgb(var(--ink) / 0.06);
+  border-radius: 0.625rem;
+  box-shadow: inset 0 0 0 1.5px rgb(var(--ink) / 0.85);
 }
 .segmented button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   min-height: 2.75rem;
   padding: 0 1.1rem;
-  border-radius: 999px;
+  border-radius: 0.4rem;
   font-size: 0.9375rem;
   font-weight: 600;
   text-align: left;
-  color: rgb(var(--muted));
+  color: rgb(var(--ink));
   transition:
     background-color var(--dur-fast) ease,
-    color var(--dur-fast) ease,
-    transform var(--dur-fast) var(--ease-out);
+    color var(--dur-fast) ease;
 }
-/* Pressed: a 3:1 edge as well as the fill, so the state never rests on colour alone. */
+@media (hover: hover) and (pointer: fine) {
+  .segmented button[aria-pressed='false']:hover {
+    background: rgb(var(--ink) / 0.07);
+  }
+}
 .segmented button[aria-pressed='true'] {
-  background: rgb(var(--surface));
-  color: rgb(var(--ink));
-  box-shadow: 0 0 0 1px rgb(var(--line-strong));
+  background: rgb(var(--ink));
+  color: rgb(var(--bg));
 }
 html:not(.js) .segmented {
   display: none;
-}
-.try-dot {
-  flex: none;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: rgb(var(--signal));
-  box-shadow: 0 0 0 1px rgb(var(--ink) / 0.35);
 }
 /* Screenshot thumbnails: full strength, the chosen one ringed. */
 .shot-thumb {
@@ -1044,21 +958,12 @@ html:not(.js) .segmented {
   background: rgb(var(--ink));
   box-shadow: inset 0 0 0 3px rgb(var(--surface));
 }
-.marker-project {
-  width: 0.85rem;
-  height: 0.85rem;
-  border-width: 2px;
-  border-radius: 2px;
-  background: rgb(var(--signal));
-  transform: rotate(45deg);
-}
 
 /* ------------------------------------------------------------------ *
  * Experience: a road spine, every entry readable without a click.
  * ------------------------------------------------------------------ */
 .timeline {
   position: relative;
-  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -1299,7 +1204,6 @@ html:not(.js) .segmented {
     background: Highlight;
   }
   .marker-role,
-  .marker-project,
   .board-stop,
   .strip-stop,
   .idea-stop {
@@ -1307,7 +1211,6 @@ html:not(.js) .segmented {
     background: CanvasText;
   }
   .flag-plate,
-  .area,
   .idea {
     border: 1px solid CanvasText;
   }

@@ -25,7 +25,7 @@ export const experience: Entry[] = [
     title: 'Co-founder',
     org: { name: 'SwiftDineOS', href: 'https://www.swiftdineos.in/' },
     period: 'Jun 2026 – present',
-    where: 'Self-employed · on-site, Pune',
+    where: 'Self-employed, on-site in Pune',
     points: [
       'Co-founded SwiftDineOS, an AI-powered, cloud-based restaurant operating system; I drive product strategy and business development and work on full-stack product development.',
       'Helped connect QR ordering, restaurant operations, CRM with RFM-based customer tiers, loyalty, AI-assisted recommendations and business analytics across the customer, staff, owner and admin experiences.',
@@ -38,7 +38,7 @@ export const experience: Entry[] = [
     title: 'Lead developer',
     org: { name: 'LevelUp by SquadUp' },
     period: 'Sep 2026',
-    where: 'Team project · event platform',
+    where: 'Team project, event platform',
     points: ['Led development of the event’s registration, QR check-in, player dashboard and organiser portals.'],
     project: 'levelup',
   },
@@ -48,7 +48,7 @@ export const experience: Entry[] = [
     title: 'Digital Marketing & Social Media Head',
     org: { name: 'Aiera Mindlabs', href: 'https://www.aiera-mindlabs.com/' },
     period: 'Nov 2025 – Apr 2026',
-    where: 'Part-time · hybrid, Pune',
+    where: 'Part-time, hybrid in Pune',
     points: [
       'Managed social media strategy and executed reach-focused Meta Ads campaigns.',
       'Generated 100,000+ impressions, strengthening brand visibility and audience reach.',

@@ -14,10 +14,17 @@ function Timeline({ title, entries }: { title: string; entries: Entry[] }) {
           return (
             <li key={e.id} id={e.id} className="timeline-item">
               <Marker kind={e.kind} className="timeline-marker" />
-              <p className="tabular text-small text-muted">
-                <span className="sr-only">{kindLabel[e.kind]}, </span>
-                {e.period}
-                {e.where ? <> · {e.where}</> : null}
+              <p className="flex flex-wrap gap-x-4 text-small">
+                <span className="tabular font-semibold">
+                  <span className="sr-only">{kindLabel[e.kind]}, </span>
+                  {e.period}
+                </span>
+                {e.where ? (
+                  <span className="text-muted">
+                    <span className="sr-only">, </span>
+                    {e.where}
+                  </span>
+                ) : null}
               </p>
               <h4 className="mt-1 text-[1.25rem] font-semibold leading-snug">
                 {e.title},{' '}

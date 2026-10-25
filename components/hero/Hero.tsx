@@ -1,5 +1,3 @@
-import { statSync } from 'node:fs'
-import { join } from 'node:path'
 import type { ReactNode } from 'react'
 import { Github, Linkedin } from 'lucide-react'
 import { projects } from '@/content/projects'
@@ -8,10 +6,6 @@ import { screening } from '@/content/screening'
 import type { Project } from '@/content/types'
 import ParkitDiagram from '@/components/work/ParkitDiagram'
 import RouteBoard, { type BoardRow } from './RouteBoard'
-
-const resumeSize = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(
-  statSync(join(process.cwd(), 'public', site.resume.href)).size / 1024,
-)
 
 /** A 2.4:1 crop of a public screen. `sizes` before `srcSet` before `src`: React sets props in order, and an early
  * `src` would start a second download. */
@@ -41,14 +35,14 @@ function Facts() {
       label: 'Studying',
       value: (
         <>
-          B.Tech CSE (AI &amp; Data Science), <span className="whitespace-nowrap">MIT-WPU</span>, Pune · second year
-          {approved.classYear ? <> · {classYear.label}</> : null}
+          B.Tech CSE (AI &amp; Data Science), <span className="whitespace-nowrap">MIT-WPU</span>, Pune, second year
+          {approved.classYear ? <>, {classYear.label}</> : null}
         </>
       ),
     },
     ...(approved.cgpa ? [{ label: 'CGPA', value: cgpa }] : []),
     { label: 'Also', value: <>BS in Data Science and Applications, IIT&nbsp;Madras (online)</> },
-    { label: 'Building', value: <>Co-founder, <span translate="no">SwiftDineOS</span> · since Jun 2026</> },
+    { label: 'Building', value: <>Co-founder of <span translate="no">SwiftDineOS</span>, since June 2026</> },
     {
       label: 'Open to',
       value: <>Internships in {site.availability.roles.join(', ').replace(/, ([^,]*)$/, ' and $1')}</>,
@@ -73,9 +67,8 @@ export default function Hero() {
     name: project.name,
     kind: project.kind,
     role: project.role,
-    status: project.statusShort,
     flag: project.flagship?.label,
-    caption: project.heroCrop?.caption ?? `${project.name} pipeline (it runs locally with a webcam)`,
+    caption: project.heroCrop?.caption ?? `${project.name} pipeline, from camera frame to bill`,
     preview: project.heroCrop ? <Crop project={project} first={i === 0} /> : <ParkitDiagram compact />,
   }))
 
@@ -94,8 +87,7 @@ export default function Hero() {
             </a>
             <a href={site.resume.href} download={site.resume.fileName} className="btn btn-secondary px-5 sm:px-6">
               Résumé
-              <span className="hidden font-normal text-muted sm:inline">PDF, {resumeSize} KB</span>
-              <span className="sr-only sm:hidden"> (PDF)</span>
+              <span className="sr-only"> (PDF)</span>
             </a>
             <a href="#contact" className="btn btn-secondary px-5 sm:px-6">
               Contact

@@ -16,14 +16,12 @@ export const projects: Project[] = [
     period: 'Jun 2026 – present',
     role: 'Co-founder',
     kind: 'Restaurant operating system',
-    place: 'Restaurant tables',
-    status: 'Company · live site at swiftdineos.in',
-    statusShort: 'Company · live site',
+    status: 'Live at swiftdineos.in',
     tagline: 'An AI-powered, cloud-based operating system for restaurants.',
     summary:
       'SwiftDineOS is a cloud-based restaurant operating system that unifies digital ordering, restaurant operations, customer intelligence, loyalty and business analytics in one platform. Rather than treating QR ordering as a standalone feature, I helped shape and develop an integrated product that connects customer interactions with restaurant workflows, customer retention and business performance.',
     contribution:
-      'As co-founder, I drive product strategy and business development and work hands-on in full-stack product development. SwiftDineOS is a shared effort: the six areas below are ones I’ve worked on, not features I built alone.',
+      'As co-founder, I drive product strategy and business development and work hands-on in full-stack product development, across the six areas of the platform below.',
     highlightsTitle: 'What I’ve helped build',
     highlights: [
       {
@@ -53,7 +51,6 @@ export const projects: Project[] = [
     ],
     stack: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'Supabase', 'Prisma ORM'],
     live: { href: 'https://www.swiftdineos.in/', label: 'swiftdineos.in' },
-    source: { unavailable: 'Private codebase' },
     shots: [
       {
         src: '/work/swiftdine-home',
@@ -80,19 +77,15 @@ export const projects: Project[] = [
         caption: 'The landing page on a phone',
       },
     ],
-    demo: 'Order from table 7',
-    demoNote:
-      'One part of the system: a guest’s order from table 7 through the kitchen display to the bill. It runs on sample data, so no order reaches a restaurant and no payment is taken.',
     heroCrop: {
       alt: 'SwiftDineOS walkthrough: “One QR. The entire dining experience.” beside a table QR code.',
       caption: 'SwiftDineOS public walkthrough, step 1',
     },
     flagship: {
       label: 'Flagship',
-      roleDetail: 'Co-founder · Product strategy and full-stack product development',
+      roleDetail: 'Co-founder, leading product strategy and full-stack product development',
       areasIntro: 'Six areas of one platform, designed around the same tables, orders and customers rather than as separate tools.',
       idea: {
-        title: 'The core idea',
         lead: 'One operating system, not a collection of disconnected tools.',
         body: 'SwiftDineOS connects digital ordering, restaurant operations, customer intelligence, loyalty and analytics, so a customer’s interactions can inform both the service happening now and the restaurant’s longer-term decisions.',
         loopLabel: 'The loop it’s designed around',
@@ -103,7 +96,6 @@ export const projects: Project[] = [
           { name: 'Owner', detail: 'Analytics and growth decisions' },
           { name: 'Next visit', detail: 'Recommendations and rewards' },
         ],
-        caveat: 'A product-design view of how the areas fit together, not a map of every live data flow.',
       },
     },
   },
@@ -113,10 +105,7 @@ export const projects: Project[] = [
     period: 'Sep 2026',
     role: 'Lead developer',
     kind: 'Event registration and dashboard',
-    place: 'Event halls',
-    status: 'Season 2026 · public welcome page and player portal online',
-    statusShort: 'Season 2026',
-    team: 'Team project with designers, who created the companion and badge art',
+    team: 'A team I led, with designers creating the companion and badge art',
     tagline: 'Registration, check-in and a live dashboard for a game-development event.',
     summary:
       'Players register by choosing a Pokémon-inspired starter companion, then follow their XP, companion evolution, badges and leaderboards in a player dashboard. Volunteers check players in by scanning their digital pass, and organisers run sessions, onboarding, credentials and attendance from their own portal.',
@@ -130,7 +119,7 @@ export const projects: Project[] = [
       },
       {
         title: 'Check-ins that count once',
-        body: 'Automated safeguards stop a pass scanned twice, even at the same moment, from recording attendance or awarding XP twice. The simulation shows the idea.',
+        body: 'Automated safeguards stop a pass scanned twice, even at the same moment, from recording attendance or awarding XP twice.',
       },
       {
         title: 'Progress players can see',
@@ -139,8 +128,7 @@ export const projects: Project[] = [
     ],
     stack: ['React', 'TypeScript', 'TanStack Start', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'SQL'],
     // /levelup itself is the signed-in player portal; /levelup/welcome is the public entry point.
-    live: { href: 'https://squadup-levelup.vercel.app/levelup/welcome', label: 'squadup-levelup.vercel.app' },
-    source: { unavailable: 'Private repository' },
+    live: { href: 'https://squadup-levelup.vercel.app/levelup/welcome', label: 'squadup-levelup.vercel.app', cta: 'Visit the event site' },
     shots: [
       {
         src: '/work/levelup-starter',
@@ -159,7 +147,6 @@ export const projects: Project[] = [
         caption: 'The player portal sign-in',
       },
     ],
-    demo: 'Scan a player pass',
     heroCrop: {
       alt: 'LevelUp starter selection: three pixel-art companions beside a lake.',
       caption: 'LevelUp registration (art by the design team)',
@@ -170,12 +157,9 @@ export const projects: Project[] = [
     name: 'ParkIT',
     period: 'Feb – Oct 2026',
     role: 'Lead developer',
-    kind: 'Number-plate parking system',
-    place: 'Parking gates',
-    status: 'Runs locally with a webcam · no hosted version',
-    statusShort: 'Runs locally',
+    kind: 'Parking system with plate recognition',
     team: 'Second-year OOP and DBMS team project',
-    tagline: 'A camera-based parking system that reads number plates and bills automatically.',
+    tagline: 'Parking management with automated number-plate recognition, on a C++17 core.',
     summary:
       'A webcam reads each vehicle’s number plate. The first read records entry and assigns a free slot; the next records exit and produces a bill, with peak-hour pricing, all from a Streamlit console.',
     problem:
@@ -196,9 +180,12 @@ export const projects: Project[] = [
         title: 'No double-booked slots',
         body: 'In MySQL mode, stored procedures and triggers manage sessions, and slot claims use SELECT … FOR UPDATE, so two cars can never get the same slot.',
       },
+      {
+        title: 'From gate to bill',
+        body: 'Entry claims the first free slot; exit prices the stay with peak-hour and weekend rates and shows the fare with a payment QR code. A dashboard tracks occupancy, and every record is kept in CSV or MySQL.',
+      },
     ],
     stack: ['Python', 'YOLOv8', 'OpenCV', 'EasyOCR', 'Streamlit', 'C++17', 'C', 'MySQL', 'CSV'],
-    live: { unavailable: 'Runs locally and needs a webcam' },
     source: {
       href: 'https://github.com/RohitBhanose/parkinglotsystem/tree/parkinglotsystem-cpp',
       label: 'github.com/RohitBhanose/parkinglotsystem',
@@ -213,9 +200,6 @@ export const projects: Project[] = [
     period: 'Jun 2026',
     role: 'Lead developer',
     kind: 'Street View geography game',
-    place: 'City streets',
-    status: 'Live · Street View map currently unavailable',
-    statusShort: 'Live · map unavailable',
     tagline: 'A GeoGuessr-style game set on the streets of India and the world.',
     summary:
       'Drop into a Google Street View panorama, read the clues (road signs, architecture, language) and pin your guess on the map. 5 rounds, up to 5,000 points each, in India or World mode.',
@@ -234,13 +218,12 @@ export const projects: Project[] = [
         body: 'Each game fills 5 category slots (urban, suburban, rural, highway, landmark) from verified locations, deduplicated by panorama and coordinates.',
       },
       {
-        title: 'Handling Street View coverage gaps',
+        title: 'Coverage-aware panoramas',
         body: 'If a stored panorama fails, the client searches outward for outdoor coverage and reports the snapped position, so scoring stays fair.',
       },
     ],
     stack: ['FastAPI', 'Python', 'SQLite', 'REST APIs', 'React', 'TypeScript', 'Google Maps Platform', 'Vercel', 'Render'],
-    live: { href: 'https://indiaguessr.vercel.app/', label: 'indiaguessr.vercel.app' },
-    notice: 'The live game’s Street View map is temporarily unavailable. The scoring demo here runs the same formula.',
+    // The live game (indiaguessr.vercel.app) is left out until its Street View rounds load again.
     source: { href: 'https://github.com/RohitBhanose/IndiaGuessr', label: 'github.com/RohitBhanose/IndiaGuessr' },
     shots: [
       {
@@ -252,7 +235,6 @@ export const projects: Project[] = [
         caption: 'Choosing between India and World mode',
       },
     ],
-    demo: 'Play with the scoring',
     heroCrop: {
       alt: 'IndiaGuessr: “Where in the world are you?” above the India Mode and World Mode cards.',
       caption: 'IndiaGuessr home page',
@@ -264,9 +246,7 @@ export const projects: Project[] = [
     period: 'Jan 2026',
     role: 'Lead developer',
     kind: 'Food-donation NGO directory',
-    place: 'Kitchens and NGOs',
-    status: 'Live · 27 organisations listed',
-    statusShort: 'Live',
+    status: 'Live, with 27 organisations listed',
     tagline: 'Helping restaurants find the NGOs that redistribute surplus food.',
     summary:
       'A discovery platform with a curated directory of 27 food-redistribution organisations across Indian cities, searchable by name and filterable by city and donation category, plus guidance for restaurants on donating safely.',
@@ -304,7 +284,6 @@ export const projects: Project[] = [
         tone: 'light',
       },
     ],
-    demo: 'Filter the directory',
     heroCrop: {
       alt: 'Leftovera: “Bridge the gap between surplus & scarcity” with buttons to find NGOs and for restaurants.',
       caption: 'Leftovera home page',

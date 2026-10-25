@@ -69,8 +69,10 @@ export const viewport: Viewport = {
  * Runs before first paint: marks JavaScript as available, applies an explicit theme choice without a flash, and
  * hands content back if a page script fails to load (CSS only hides things behind `.js`). Smooth scrolling starts
  * after load, so a shared link such as /#contact opens in place instead of gliding through the whole page.
+ * In-page links remember where they were followed from, and Back returns there: with smooth scrolling on, Chrome
+ * doesn't always restore the position itself.
  */
-const headScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t)}catch(e){}addEventListener('error',function(e){var s=e.target;if(s&&s.tagName==='SCRIPT'&&(s.src||'').indexOf('/_next/')>-1)d.classList.remove('js')},true);addEventListener('load',function(){d.classList.add('smooth')})})()`
+const headScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t)}catch(e){}addEventListener('error',function(e){var s=e.target;if(s&&s.tagName==='SCRIPT'&&(s.src||'').indexOf('/_next/')>-1)d.classList.remove('js')},true);addEventListener('load',function(){d.classList.add('smooth')});var y={};addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"],a[href^="/#"]');if(a)y[location.hash]=scrollY},true);addEventListener('popstate',function(){var v=y[location.hash];if(v!==undefined)requestAnimationFrame(function(){scrollTo({top:v,behavior:'instant'})})})})()`
 
 /** Structured data built only from facts shown on the page. */
 const person = {

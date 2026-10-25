@@ -1,5 +1,5 @@
 /**
- * ParkIT has no hosted demo, so its plate is a diagram of the real pipeline (from the repository's
+ * ParkIT's plate is a diagram of its real pipeline (from the repository's
  * parkinglotsystem-cpp branch), drawn as parking bays on asphalt. Numbers are used because this is a sequence.
  */
 const steps = [
@@ -53,7 +53,7 @@ export default function ParkitDiagram({ compact = false }: { compact?: boolean }
         </ol>
       </div>
       <figcaption className="mt-3 text-fine text-muted">
-        How a car is recorded, from camera frame to database row. No hosted demo: the system runs locally with a webcam.
+        How a car is recorded, from camera frame to database row.
       </figcaption>
     </figure>
   )

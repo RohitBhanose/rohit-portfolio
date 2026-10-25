@@ -14,7 +14,7 @@ export default function Work() {
       <ol className="stops">
         {projects.map((project, i) => (
           <li key={project.slug}>
-            <ProjectStop project={project} index={i} total={projects.length} next={projects[i + 1]} />
+            <ProjectStop project={project} next={projects[i + 1]} />
           </li>
         ))}
       </ol>

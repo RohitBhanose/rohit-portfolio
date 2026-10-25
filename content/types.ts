@@ -1,11 +1,5 @@
-export type ExternalLink = { href: string; label: string }
-
-/** A link that does not exist publicly, with the reason shown instead of a dead button. */
-export type UnavailableLink = { unavailable: string }
-
-export type MaybeLink = ExternalLink | UnavailableLink
-
-export const isAvailable = (link: MaybeLink): link is ExternalLink => 'href' in link
+/** `label` is the address shown under the link; `cta` overrides the link text (e.g. "Visit the event site"). */
+export type ExternalLink = { href: string; label: string; cta?: string }
 
 export const projectSlugs = ['swiftdineos', 'levelup', 'parkit', 'indiaguessr', 'leftovera'] as const
 export type ProjectSlug = (typeof projectSlugs)[number]
@@ -41,14 +35,12 @@ export type Flagship = {
   roleDetail: string
   /** One line under the feature areas' heading. */
   areasIntro: string
-  /** The product idea that ties the areas together: a design insight, never a claim that every flow is live. */
+  /** The product idea that ties the areas together, framed as how the platform is designed. */
   idea: {
-    title: string
     lead: string
     body: string
     loopLabel: string
     loop: { name: string; detail: string }[]
-    caveat: string
   }
 }
 
@@ -61,20 +53,16 @@ export type Project = {
   period: string
   /** His role, as on the résumé. */
   role: string
-  /** What the project is, in a few words (hero index, stop header). */
+  /** What the project is, in a few words (hero route board). */
   kind: string
-  /** Where the project meets the physical world; the stop's sign destination. */
-  place: string
-  /** Verified status only. Keep it true: it is shown beside the live link. */
-  status: string
-  /** A two-or-three-word version of `status` for the hero's route board. */
-  statusShort: string
+  /** A verified, positive status (e.g. where it is live). Omit it rather than guess or list a limitation. */
+  status?: string
   /** Team context, only where known. Never a size or a share of the work unless confirmed. */
   team?: string
   /** One-line value proposition. */
   tagline: string
   summary: string
-  /** Why it exists; shown under "More context". Omit when it would need unapproved detail. */
+  /** The problem it addresses, shown above "My part". Omit when it would need unapproved detail. */
   problem?: string
   /** His part, always visible. */
   contribution: string
@@ -82,17 +70,14 @@ export type Project = {
   highlightsTitle: string
   highlights: Highlight[]
   stack: string[]
-  live: MaybeLink
-  source: MaybeLink
-  /** Shown beside the links when a live site has a known problem. */
-  notice?: string
+  /** Only links that are public and verified to work; a missing one is simply not shown. */
+  live?: ExternalLink
+  source?: ExternalLink
   shots: Shot[]
   /** Rendered as an inline diagram instead of a screenshot. */
   diagram?: 'parkit'
-  /** The verb that names the interactive demo, shown before it is opened. */
-  demo: string
-  /** One line beside the demo button saying what the demo covers (and what it doesn't). */
-  demoNote?: string
+  /** Names the interactive demo, for the one project that has one (it needs a loader in components/work/Stage.tsx). */
+  demo?: string
   heroCrop?: HeroCrop
   flagship?: Flagship
 }

@@ -9,7 +9,6 @@ export default function Footer() {
         <div className="space-y-1">
           <p className="font-display text-[1.625rem] font-semibold leading-none text-ink">Rohit Bhanose</p>
           <p>Pune, India. Last updated {updated}.</p>
-          <p>Set in Barlow and Barlow Condensed. Built with Next.js and Tailwind CSS.</p>
         </div>
         <ul className="flex flex-wrap gap-x-1 gap-y-1">
           <li>

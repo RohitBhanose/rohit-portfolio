@@ -7,7 +7,6 @@ export type BoardRow = {
   name: string
   kind: string
   role: string
-  status: string
   /** The flagship's marker ("Flagship"); it sits on the name line, so the row is no taller. */
   flag?: string
   caption: string
@@ -69,10 +68,8 @@ export default function RouteBoard({ rows }: { rows: BoardRow[] }) {
                   <span className="board-role">{row.role}</span>
                 </span>
                 <span className="board-meta">
-                  {row.kind}
-                  <span aria-hidden="true"> · </span>
                   <span className="sr-only">, </span>
-                  {row.status}
+                  {row.kind}
                 </span>
               </span>
             </a>

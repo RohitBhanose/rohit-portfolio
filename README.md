@@ -4,7 +4,7 @@ The personal site of Rohit Bhanose: a single page that leads with real, linked w
 
 Built with Next.js 14 (App Router, static export), React 18, TypeScript and Tailwind CSS. No animation or UI
 libraries: motion is CSS. The page ships about 3 kB (gzip) of its own JavaScript on top of the React runtime
-(about 91 kB first load). Each project demo is a separate 2–3.5 kB chunk, fetched only when a visitor opens it.
+(about 91 kB first load). ParkIT's interactive demo is a separate chunk, fetched only when a visitor opens it.
 
 ## Run it
 
@@ -28,15 +28,16 @@ Everything on the page comes from typed files in [`content/`](content/). Change 
 | --- | --- |
 | `content/site.ts` | Name, positioning line, availability, links, title, description, nav |
 | `content/screening.ts` | Class year and CGPA, with their approval switches (server-only, so unapproved values never ship) |
-| `content/projects.ts` | The five featured projects: status, role, team, contribution, highlights, stack, links, screenshots, demo name, hero crop. SwiftDineOS also has a `flagship` block (role line, feature-area intro, core idea), and its `highlights` render as the six numbered feature areas |
+| `content/projects.ts` | The five featured projects: status, role, team, contribution, highlights, stack, links, screenshots, hero crop, and (ParkIT only) the demo name. SwiftDineOS also has a `flagship` block (role line, feature-area intro, core idea), and its `highlights` render as its six feature areas |
 | `content/experience.ts` | Roles and education, newest first |
 | `content/skills.ts` | Skill groups, each skill pointing at the project or role where it was used |
 | `content/vcard.ts` | The contact card behind the QR code and `/contact.vcf` |
 
 Rules the content follows: every claim traces to the résumé, a public repository or a public page. Private codebases
-are described at the level of the résumé and their public sites only. A link that doesn't exist publicly is written as
-`{ unavailable: 'Private repository' }` and renders as plain text with the reason. Status lines must stay true: update
-them (and `notice`) when a live site changes. No percentages, ratings or unverified numbers.
+are described at the level of the résumé and their public sites only. List only links that are public and work; a
+project without a public repository or live site simply shows fewer links. `status` is optional: use it only for a
+verified, positive fact (for example, where the project is live) and leave it out rather than list a limitation. No
+percentages, ratings or unverified numbers.
 
 **Screening facts:** class year and CGPA appear only when `screening.approved` (content/screening.ts) allows them.
 
@@ -62,8 +63,8 @@ components/
                 RevealObserver
   hero/         Hero (name, positioning, facts sign, actions) and RouteBoard (project links + passive preview)
   work/         Work, ProjectStop (one evidence-first section per project), StripMap (sticky desktop index),
-                Stage (screenshots or the lazy demo), Gallery, ParkitDiagram, ProjectLinks, Stack
-  demos/        One self-contained, lazy-loaded demo per project, each labelled as a simulation
+                Stage (ParkIT's diagram or its lazy demo), Gallery, ParkitDiagram, ProjectLinks, Stack
+  demos/        ParkitPlateDemo: a self-contained, lazy-loaded walk-through of ParkIT's pipeline
   sections/     Experience (road-spine timeline), Skills (static index), About, Contact
   contact/      CopyEmail, ContactQr (encoded at build time, no client JS)
   ui/           Section, Plate, Marker, ExternalLink
@@ -74,10 +75,10 @@ public/fonts/   self-hosted Barlow (SIL Open Font License, see OFL.txt)
 
 - **Design system:** tokens in `app/globals.css` (light and dark), exposed to Tailwind in `tailwind.config.ts`.
   Yellow has three jobs: the primary action, "you are here", and signage on asphalt. Selected states on the page
-  background use `--mark` (ink in light, yellow in dark) so they stay at 3:1 or better. One marker vocabulary
-  (`components/ui/Marker.tsx`): diamond = project, ring = role, circle = study.
+  background use `--mark` (ink in light, yellow in dark) so they stay at 3:1 or better. Markers:
+  diamonds for projects on the board and strip; `components/ui/Marker.tsx` draws the timeline's ring (role) and circle (study).
 - **Everything readable without a click:** project sections are plain anchors (`#swiftdineos` …), experience and
-  skills are static. Only "Why it exists" is folded away (native `<details>`).
+  skills are static, and nothing is folded away.
 - **Fonts** are self-hosted latin subsets with explicit preloads. Body text uses `font-display: optional` (no
   layout shift); headings use `swap`. `vercel.json` caches `/fonts` as immutable, so rename a font file if it ever
   changes.
@@ -86,8 +87,8 @@ public/fonts/   self-hosted Barlow (SIL Open Font License, see OFL.txt)
   links open in place.
 - **Resilience:** the head script adds `.js` before paint and removes it if a page script fails to load, so content
   hidden for the interactive layout comes back. With JavaScript off, everything is readable.
-- **Demos** load only when a visitor opens "Try it" (`React.lazy`), can be retried if a chunk fails, use sample data,
-  say so on screen, and never call a network service.
+- **Demo:** only ParkIT has one. It loads when a visitor opens "Try it" (`React.lazy`) and can be retried if its
+  chunk fails to load. To add a demo, set `demo` on the project and add a loader in `components/work/Stage.tsx`.
 - **Images** are pre-sized WebP with explicit dimensions and `srcset` (a static export has no image optimiser). Set
   `sizes` before `srcSet` before `src` on client-rendered images, or the browser downloads twice.
 

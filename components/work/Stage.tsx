@@ -19,14 +19,13 @@ function DemoFailed({ onRetry }: DemoProps) {
   )
 }
 
-// Each demo is its own chunk, fetched only when a visitor opens it (or starts to: see `warm`).
-const loaders: Record<ProjectSlug, () => Promise<DemoModule>> = {
-  swiftdineos: () => import('@/components/demos/SwiftDineFlowDemo'),
-  levelup: () => import('@/components/demos/LevelUpLedgerDemo'),
+// Only ParkIT has a demo. It is its own chunk, fetched when a visitor opens it (or starts to: see `warm`).
+// A project with `demo` set in content/projects.ts needs an entry here.
+const loaders: Partial<Record<ProjectSlug, () => Promise<DemoModule>>> = {
   parkit: () => import('@/components/demos/ParkitPlateDemo'),
-  indiaguessr: () => import('@/components/demos/GuessrScoreDemo'),
-  leftovera: () => import('@/components/demos/LeftoveraFilterDemo'),
 }
+const failedModule: DemoModule = { default: DemoFailed }
+const load = (slug: ProjectSlug) => loaders[slug]?.() ?? Promise.reject(new Error(`No demo for ${slug}`))
 
 function Ready({ onReady }: { onReady: () => void }) {
   useEffect(onReady, [onReady])
@@ -38,19 +37,17 @@ type Props = {
   name: string
   /** "Screenshots" or "Pipeline". */
   previewLabel: string
-  /** The verb that names the demo, e.g. "Order from table 7". */
+  /** The verb that names the demo, e.g. "Follow a number plate". */
   demoName: string
-  /** What the demo covers, shown under the buttons and read as the demo button's description. */
-  demoNote?: string
   /** Server-rendered screenshots or diagram. */
   preview: ReactNode
 }
 
 /**
- * A project's stage: its preview, or its demo once a visitor asks for it. Both stay mounted once shown and are
+ * ParkIT's stage: its pipeline diagram, or its demo once a visitor asks for it. Both stay mounted once shown and are
  * toggled with `hidden`, so the demo keeps its state. A failed chunk can be retried without reloading the page.
  */
-export default function Stage({ slug, name, previewLabel, demoName, demoNote, preview }: Props) {
+export default function Stage({ slug, name, previewLabel, demoName, preview }: Props) {
   const [view, setView] = useState<'preview' | 'demo'>('preview')
   const [opened, setOpened] = useState(false)
   const [attempt, setAttempt] = useState(0)
@@ -61,15 +58,15 @@ export default function Stage({ slug, name, previewLabel, demoName, demoNote, pr
   const Demo = useMemo(
     () =>
       lazy(() =>
-        loaders[slug]().then(
+        load(slug).then(
           (mod) => ((failed.current = false), mod),
-          (): DemoModule => ((failed.current = true), { default: DemoFailed }),
+          (): DemoModule => ((failed.current = true), failedModule),
         ),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [slug, attempt],
   )
-  const warm = () => void loaders[slug]().catch(() => {})
+  const warm = () => void load(slug).catch(() => {})
   const showDemo = () => {
     if (!opened) setStatus('Loading the demo…')
     setOpened(true)
@@ -82,7 +79,7 @@ export default function Stage({ slug, name, previewLabel, demoName, demoNote, pr
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center gap-3">
+      <div className="mb-4">
         <div className="segmented" role="group" aria-label={`${name}: choose a view`}>
           <button type="button" aria-pressed={view === 'preview'} onClick={() => setView('preview')} className="m-press">
             {previewLabel}
@@ -93,18 +90,11 @@ export default function Stage({ slug, name, previewLabel, demoName, demoNote, pr
             onClick={showDemo}
             onPointerEnter={warm}
             onFocus={warm}
-            aria-describedby={demoNote ? `${slug}-demo-note` : undefined}
             className="m-press"
           >
-            <span aria-hidden="true" className="try-dot" />
             Try it: {demoName}
           </button>
         </div>
-        {demoNote ? (
-          <p id={`${slug}-demo-note`} className="demo-note basis-full max-w-measure text-small text-muted">
-            {demoNote}
-          </p>
-        ) : null}
       </div>
       <div hidden={view !== 'preview'} className="m-fade">
         {preview}

@@ -4,7 +4,7 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { Pause, Play } from 'lucide-react'
 
 /**
- * ParkIT has no hosted demo, so this walks a drawn car with a sample plate through the real pipeline (from the
+ * Walks a drawn car with an example plate through ParkIT's real pipeline (from the
  * repository): OpenCV frame, YOLOv8 box, EasyOCR read, format repair, 2-frame agreement, entry and bill.
  * The stage is decorative (aria-hidden); the readout under it carries the meaning in text.
  */
@@ -26,7 +26,7 @@ const steps: Step[] = [
     title: 'Capture',
     say: 'OpenCV captures a frame from the webcam.',
     lines: ['OpenCV captures a frame from the webcam.'],
-    note: 'Here the frame is a drawing of a car with a sample plate.',
+    note: 'The frame here is a drawing, with an example plate.',
   },
   {
     title: 'Detect',
@@ -108,7 +108,7 @@ function Stage({ step }: { step: number }) {
       <span className={`absolute inset-3 transition-opacity duration-[var(--dur-base)] ${step === 0 ? 'opacity-100' : 'opacity-40'}`}>
         {corners.map((c) => <span key={c} className={`absolute h-5 w-5 border-ink ${c}`} />)}
       </span>
-      <span className="absolute left-10 top-3 text-fine text-muted">Sample frame</span>
+      <span className="absolute left-10 top-3 text-fine text-muted">Example frame</span>
       <div className="absolute bottom-4 left-1/2 h-32 w-52 -translate-x-1/2">
         {['left-4', 'right-4'].map((p) => <span key={p} className={`absolute bottom-0 ${p} h-6 w-10 rounded-md bg-ink/70`} />)}
         <span className="absolute inset-x-0 bottom-3 top-10 rounded-2xl bg-line-strong" />
@@ -211,7 +211,7 @@ export default function ParkitPlateDemo() {
       </div>
 
       <p className="mt-auto text-fine text-muted">
-        An illustration of the pipeline with a sample plate. The real system runs locally with a webcam and a trained model.
+        A walk-through of ParkIT’s pipeline, using a drawn car and an example plate.
       </p>
       <span role="status" className="sr-only">{live ? `Step ${step + 1} of 6, ${steps[step].title}. ${steps[step].say}` : ''}</span>
     </div>
