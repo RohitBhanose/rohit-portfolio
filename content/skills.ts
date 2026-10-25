@@ -1,93 +1,81 @@
-import { archive, projects } from './projects'
+import { projects } from './projects'
+import { education, experience } from './experience'
 import type { ProjectSlug, SkillGroup, SkillRef } from './types'
 
 /**
- * Skills from the resume, each pointing at the work where it was used. Skills without `usedIn`
- * are listed together on one line per group.
+ * Skills from the résumé, each linked to the work where it was used. Skills with nothing on this page to point at
+ * are listed as "also familiar with", never dressed up as evidence.
  */
 export const skillGroups: SkillGroup[] = [
   {
-    name: 'Languages',
+    name: 'Programming languages',
     skills: [
-      { name: 'Python', usedIn: ['parkit', 'indiaguessr', 'student-manager'] },
+      { name: 'Python', usedIn: ['parkit', 'indiaguessr'] },
       { name: 'TypeScript', usedIn: ['swiftdineos', 'levelup', 'indiaguessr'] },
       { name: 'JavaScript', usedIn: ['leftovera'] },
       { name: 'C++', usedIn: ['parkit'] },
       { name: 'C', usedIn: ['parkit'] },
       { name: 'SQL', usedIn: ['levelup', 'parkit'] },
-      { name: 'HTML & CSS' },
+      { name: 'HTML & CSS', usedIn: ['leftovera', 'indiaguessr'] },
     ],
   },
   {
-    name: 'AI, ML & vision',
-    skills: [
-      { name: 'YOLO', usedIn: ['parkit'] },
-      { name: 'OpenCV', usedIn: ['parkit'] },
-      { name: 'LLM APIs', usedIn: ['swiftdineos'] },
-      { name: 'Document AI', usedIn: ['bizamica'] },
-      { name: 'Hugging Face' },
-      { name: 'Kaggle' },
-      { name: 'Promptfoo' },
-    ],
-  },
-  {
-    name: 'Frontend',
+    name: 'Frontend development',
     skills: [
       { name: 'React', usedIn: ['swiftdineos', 'levelup', 'indiaguessr', 'leftovera'] },
       { name: 'Next.js', usedIn: ['swiftdineos'] },
-      { name: 'Tailwind CSS', usedIn: ['swiftdineos', 'levelup', 'indiaguessr', 'leftovera'] },
+      { name: 'Tailwind CSS', usedIn: ['swiftdineos', 'levelup', 'leftovera'] },
       { name: 'TanStack Start', usedIn: ['levelup'] },
-      { name: 'Vite', usedIn: ['levelup', 'indiaguessr', 'leftovera'] },
+      { name: 'Vite', usedIn: ['levelup', 'leftovera'] },
+      { name: 'React Router', usedIn: ['leftovera'] },
       { name: 'Streamlit', usedIn: ['parkit'] },
     ],
   },
   {
-    name: 'Backend & data',
+    name: 'Backend and databases',
     skills: [
-      { name: 'PostgreSQL', usedIn: ['swiftdineos', 'levelup'] },
-      { name: 'Supabase', usedIn: ['swiftdineos', 'levelup'] },
       { name: 'FastAPI', usedIn: ['indiaguessr'] },
+      { name: 'REST APIs', usedIn: ['indiaguessr'] },
+      { name: 'Supabase', usedIn: ['swiftdineos', 'levelup'] },
+      { name: 'PostgreSQL', usedIn: ['levelup'] },
       { name: 'Prisma ORM', usedIn: ['swiftdineos'] },
       { name: 'MySQL', usedIn: ['parkit'] },
-      { name: 'SQLite', usedIn: ['indiaguessr', 'student-manager'] },
-      { name: 'Flask', usedIn: ['student-manager'] },
-      { name: 'MongoDB' },
+      { name: 'SQLite', usedIn: ['indiaguessr'] },
     ],
+    familiar: ['Flask', 'MongoDB'],
   },
   {
-    name: 'Tools & platforms',
+    name: 'AI/ML and data science',
     skills: [
-      { name: 'Vercel', usedIn: ['swiftdineos', 'levelup', 'indiaguessr', 'leftovera'] },
+      { name: 'YOLOv8 (object detection)', usedIn: ['parkit'] },
+      { name: 'OpenCV', usedIn: ['parkit'] },
+      { name: 'EasyOCR', usedIn: ['parkit'] },
+      { name: 'Deep learning for document extraction', usedIn: ['bizamica'] },
+      { name: 'Statistics and mathematics for data science', usedIn: ['iitm'] },
+    ],
+    familiar: ['Hugging Face', 'Kaggle', 'Promptfoo'],
+  },
+  {
+    name: 'Tools and platforms',
+    skills: [
+      { name: 'Git & GitHub', usedIn: ['parkit', 'indiaguessr', 'leftovera'] },
+      { name: 'Vercel', usedIn: ['levelup', 'indiaguessr', 'leftovera'] },
       { name: 'Render', usedIn: ['indiaguessr'] },
       { name: 'Google Maps Platform', usedIn: ['indiaguessr'] },
-      { name: 'Playwright', usedIn: ['swiftdineos', 'levelup'] },
-      { name: 'Git & GitHub' },
-      { name: 'Docker' },
-      { name: 'Linux' },
     ],
-  },
-  {
-    name: 'Growth',
-    compact: true,
-    skills: [
-      { name: 'Meta Ads Manager', usedIn: ['aiera'] },
-      { name: 'Meta Business Suite', usedIn: ['aiera'] },
-      { name: 'Canva', usedIn: ['aiera'] },
-      { name: 'Buffer', usedIn: ['aiera'] },
-    ],
+    familiar: ['Docker', 'Linux'],
   },
 ]
 
-const otherReferences: Record<Exclude<SkillRef, ProjectSlug>, { label: string; anchor: string }> = {
-  'student-manager': { label: archive[0].name, anchor: `#${archive[0].slug}` },
-  aiera: { label: 'Aiera Mindlabs', anchor: '#experience' },
-  bizamica: { label: 'bizAmica', anchor: '#experience' },
-}
+const entries = [...experience, ...education]
 
-/** Label and in-page anchor for a skill reference. Project names come from the projects themselves. */
+/** Label and in-page anchor for a skill reference. */
 export function reference(ref: SkillRef) {
-  const project = projects.find((p) => p.slug === ref)
-  return project ? { label: project.name, anchor: `#${project.slug}` } : otherReferences[ref as Exclude<SkillRef, ProjectSlug>]
+  const project = projects.find((p) => p.slug === (ref as ProjectSlug))
+  if (project) return { label: project.name, anchor: `#${project.slug}` }
+  const entry = entries.find((e) => e.id === ref)
+  if (!entry) throw new Error(`Unknown skill reference: ${ref}`)
+  return { label: entry.org.name, anchor: `#${entry.id}` }
 }
 
 export const spokenLanguages = [

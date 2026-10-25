@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react'
 
-export type GalleryItem = { caption: string; thumb: string; tone?: string }
+export type GalleryItem = { caption: string; thumb: string; tone?: string; portrait?: boolean }
 
 /**
  * Several screenshots of one project: one shown, the rest one tap away as thumbnails. The plates (with their
@@ -17,7 +17,14 @@ export default function Gallery({ name, items, plates }: { name: string; items: 
       </div>
       <div className="mt-4 flex flex-wrap gap-3" role="group" aria-label={`${name} screenshots`}>
         {items.map((item, i) => (
-          <button key={item.thumb} type="button" aria-pressed={i === index} onClick={() => setIndex(i)} className="shot-thumb m-press">
+          <button
+            key={item.thumb}
+            type="button"
+            aria-pressed={i === index}
+            onClick={() => setIndex(i)}
+            className="shot-thumb m-press"
+            data-portrait={item.portrait ? '' : undefined}
+          >
             <img src={item.thumb} alt="" width={96} height={60} loading="lazy" decoding="async" data-tone={item.tone} />
             <span className="sr-only">
               Show screenshot {i + 1}: {item.caption}

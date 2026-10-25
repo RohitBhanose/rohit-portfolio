@@ -16,15 +16,15 @@ const compactSteps = ['Camera', 'YOLOv8', 'EasyOCR', 'Streamlit', 'CSV or MySQL'
 export default function ParkitDiagram({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
-      <div className="parkit flex h-full flex-col justify-center gap-5 p-7">
-        <p className="text-small font-semibold text-white/70">ParkIT pipeline</p>
-        <ol className="flex flex-wrap items-center gap-x-2 gap-y-3">
+      <div className="parkit flex h-full flex-col justify-center gap-2 p-4 sm:gap-3 sm:p-6">
+        <p className="text-fine font-semibold text-white/70">ParkIT pipeline</p>
+        <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-2 sm:gap-x-2">
           {compactSteps.map((step, i) => (
-            <li key={step} className="flex items-center gap-2">
-              <span className="parkit-bay px-3 py-2 font-display text-[1.375rem] font-semibold leading-none text-white">
+            <li key={step} className="flex items-center gap-1.5 sm:gap-2">
+              <span className="parkit-bay px-2 py-1 font-display text-[1.0625rem] font-semibold leading-none text-white sm:px-3 sm:py-1.5 sm:text-[1.25rem]">
                 {step}
               </span>
-              {i < compactSteps.length - 1 ? <span aria-hidden="true" className="parkit-lane w-5" /> : null}
+              {i < compactSteps.length - 1 ? <span aria-hidden="true" className="parkit-lane w-3 sm:w-5" /> : null}
             </li>
           ))}
         </ol>

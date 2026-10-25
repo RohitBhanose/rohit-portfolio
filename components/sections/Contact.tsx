@@ -1,4 +1,4 @@
-﻿import { site } from '@/content/site'
+import { site } from '@/content/site'
 import Section from '@/components/ui/Section'
 import ExternalLink from '@/components/ui/ExternalLink'
 import ContactQr from '@/components/contact/ContactQr'
@@ -11,7 +11,7 @@ export default function Contact() {
     <Section
       id="contact"
       title="Contact"
-      intro="Email is the fastest way to reach me about software engineering and AI/ML internships, collaborations, or SwiftDineOS for your restaurant."
+      intro="I’m open to internships in software engineering, AI/ML and data science. Email is the fastest way to reach me, for internships, collaborations or SwiftDineOS."
     >
       <div className="grid gap-x-6 gap-y-14 lg:grid-cols-12">
         <div className="min-w-0 lg:col-span-8">

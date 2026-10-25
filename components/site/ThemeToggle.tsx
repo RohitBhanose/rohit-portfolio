@@ -27,8 +27,10 @@ export default function ThemeToggle() {
     if (document.documentElement.hasAttribute('data-theme')) syncThemeColor(initial)
     const media = window.matchMedia(query)
     const onChange = () => setTheme(effectiveTheme())
-    media.addEventListener('change', onChange)
-    return () => media.removeEventListener('change', onChange)
+    // Safari 13 and older only have the deprecated addListener; calling addEventListener there throws.
+    if (media.addEventListener) media.addEventListener('change', onChange)
+    else media.addListener(onChange)
+    return () => (media.removeEventListener ? media.removeEventListener('change', onChange) : media.removeListener(onChange))
   }, [])
 
   const toggle = () => {

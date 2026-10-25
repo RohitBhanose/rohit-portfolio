@@ -10,8 +10,12 @@ export const isAvailable = (link: MaybeLink): link is ExternalLink => 'href' in 
 export const projectSlugs = ['swiftdineos', 'levelup', 'parkit', 'indiaguessr', 'leftovera'] as const
 export type ProjectSlug = (typeof projectSlugs)[number]
 
-/** Anything a skill can point at: a project, an archived project or a role. */
-export type SkillRef = ProjectSlug | 'student-manager' | 'aiera' | 'bizamica'
+/** Experience and education entries that skills can point at (their ids in content/experience.ts). */
+export const entryIds = ['role-swiftdineos', 'role-levelup', 'aiera', 'bizamica', 'mitwpu', 'iitm'] as const
+export type EntryId = (typeof entryIds)[number]
+
+/** Anything a skill can point at: a project or an experience/education entry. */
+export type SkillRef = ProjectSlug | EntryId
 
 export type Shot = {
   /** Path without width suffix, e.g. `/work/leftovera-home` → `/work/leftovera-home-960.webp` */
@@ -29,49 +33,53 @@ export type Shot = {
 
 export type Highlight = { title: string; body: string }
 
+/** A 2.4:1 crop of an already-public screen, shown in the hero's route board (public/work/hero/<slug>-600|1200.webp). */
+export type HeroCrop = { alt: string; caption: string; tone?: 'light' }
+
 export type Project = {
   slug: ProjectSlug
   name: string
   period: string
+  /** His role, as on the résumé. */
   role: string
-  /** Where the project meets the physical world; shown in the hero index. */
+  /** What the project is, in a few words (hero index, stop header). */
+  kind: string
+  /** Where the project meets the physical world; the stop's sign destination. */
   place: string
+  /** Verified status only. Keep it true: it is shown beside the live link. */
+  status: string
+  /** A two-or-three-word version of `status` for the hero's route board. */
+  statusShort: string
+  /** Team context, only where known. Never a size or a share of the work unless confirmed. */
+  team?: string
   /** One-line value proposition. */
   tagline: string
   summary: string
-  /** Why it exists. Omit when the tagline and summary already say it. */
+  /** Why it exists; shown under "More context". Omit when it would need unapproved detail. */
   problem?: string
+  /** His part, always visible. */
   contribution: string
+  /** Heading for the highlights: engineering decisions, or product highlights where internals are private. */
+  highlightsTitle: string
   highlights: Highlight[]
-  /** Product modules, as named on the public site. */
-  modules?: string[]
   stack: string[]
   live: MaybeLink
   source: MaybeLink
-  /** The first landscape shot leads; a portrait shot becomes the phone inset, a second landscape one the detail inset. */
+  /** Shown beside the links when a live site has a known problem. */
+  notice?: string
   shots: Shot[]
-  /** `src` of the shot shown in the hero plate. Projects without one show their diagram. */
-  heroShot?: string
-  /** Hero caption when the project has no screenshot. */
-  heroCaption?: string
   /** Rendered as an inline diagram instead of a screenshot. */
   diagram?: 'parkit'
+  /** The verb that names the interactive demo, shown before it is opened. */
+  demo: string
+  heroCrop?: HeroCrop
 }
 
-export type Role = {
-  org: string
-  orgHref?: string
-  orgNote?: string
-  title: string
-  type: string
-  period: string
-  location: string
-  points: string[]
-}
+export type SkillItem = { name: string; usedIn: SkillRef[] }
 
 export type SkillGroup = {
   name: string
-  skills: { name: string; usedIn?: SkillRef[] }[]
-  /** Render the whole group as one line, e.g. tools that all come from one role. */
-  compact?: boolean
+  skills: SkillItem[]
+  /** Listed on the résumé but with no work on this page to point at. */
+  familiar?: string[]
 }

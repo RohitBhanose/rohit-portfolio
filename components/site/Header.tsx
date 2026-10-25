@@ -102,8 +102,10 @@ export default function Header() {
     const onChange = (e: MediaQueryListEvent) => {
       if (e.matches && dialogRef.current?.open) dialogRef.current.close()
     }
-    media.addEventListener('change', onChange)
-    return () => media.removeEventListener('change', onChange)
+    // Safari 13 and older only have the deprecated addListener; calling addEventListener there throws.
+    if (media.addEventListener) media.addEventListener('change', onChange)
+    else media.addListener(onChange)
+    return () => (media.removeEventListener ? media.removeEventListener('change', onChange) : media.removeListener(onChange))
   }, [])
 
   const openMenu = () => {
@@ -121,9 +123,12 @@ export default function Header() {
         <a
           href="/#top"
           translate="no"
-          className="brand -ml-1 flex min-h-11 items-center px-1 font-display text-[1.625rem] font-semibold leading-none"
+          className="brand -ml-1 flex min-h-11 items-center gap-2.5 whitespace-nowrap px-1 font-display text-[1.625rem] font-semibold leading-none"
         >
-          Rohit Bhanose
+          <span aria-hidden="true" className="rb-plate">
+            RB
+          </span>
+          <span className="max-[359px]:sr-only">Rohit Bhanose</span>
         </a>
 
         <nav aria-label="Sections" className="hidden lg:block">
@@ -142,7 +147,7 @@ export default function Header() {
             <span
               ref={indicatorRef}
               aria-hidden="true"
-              className="nav-indicator pointer-events-none absolute bottom-1 left-0 h-[3px] w-px origin-left bg-signal opacity-0"
+              className="nav-indicator pointer-events-none absolute bottom-1 left-0 h-[3px] w-px origin-left bg-mark opacity-0"
             />
           </ul>
         </nav>

@@ -3,11 +3,11 @@
 import { useId, useRef, useState, type CSSProperties } from 'react'
 import { Check, Minus } from 'lucide-react'
 
-/** Sample XP per check-in; the stage thresholds are LevelUp's real ones. Eight sessions, so stage III is reachable. */
+/** Sample values throughout: XP per check-in and the stage thresholds are illustrative, not LevelUp's. */
 const XP = 300
 const SESSIONS = [1, 2, 3, 4, 5, 6, 7, 8]
 const SCALE = XP * SESSIONS.length
-const STAGES = [{ name: 'I', at: 0 }, { name: 'II', at: 700 }, { name: 'III', at: 1900 }]
+const STAGES = [{ name: 'I', at: 0 }, { name: 'II', at: 600 }, { name: 'III', at: 1500 }]
 const fmt = new Intl.NumberFormat('en-IN').format
 
 type Row = { session: number; xp: number }
@@ -18,17 +18,17 @@ const sum = (rows: Row[]) => rows.reduce((total, row) => total + row.xp, 0)
 const stageOf = (xp: number) => STAGES.reduce((current, stage, i) => (xp >= stage.at ? i : current), 0)
 
 /**
- * The database's two rules in miniature. Every completion path takes the same per-player lock, so
- * attempts run one after another, and UNIQUE (session, player) lets a session be completed once.
+ * The idea in miniature: a pass can be checked in once per session, however many times (or however
+ * simultaneously) it is scanned. A rejected attempt records nothing.
  * A rejected attempt writes nothing.
  */
 const complete = (rows: Row[], session: number): Row[] | null =>
   rows.some((r) => r.session === session) ? null : [...rows, { session, xp: XP }]
 
 const notes = {
-  ok: 'Appended as a new row. Total and stage are computed from the rows on every read.',
-  no: 'The unique (session, player) rule allows one check-in per session, so nothing is written.',
-  race: 'Both scans take Player 01’s lock, so they run one at a time. The first writes the row; the second finds it and writes nothing.',
+  ok: 'Check-in recorded. The XP total and stage update from the recorded check-ins.',
+  no: 'This pass is already checked in for this session, so nothing new is recorded and no XP is awarded.',
+  race: 'Two scanners sent the same pass at the same moment. One check-in is recorded; the other is recognised as a duplicate and records nothing.',
 }
 
 const marker = (i: number, stage: number) =>
@@ -77,7 +77,7 @@ export default function LevelUpLedgerDemo() {
   const reset = () => {
     setRows([])
     setScan(null)
-    announce('Reset. The ledger is empty: 0 XP, stage I.')
+    announce('Reset. No check-ins recorded: 0 XP, stage I.')
   }
 
   // A changed value swaps in (its key changes); at 0 it doesn't, so the demo arrives still and resets instantly.
@@ -132,7 +132,8 @@ export default function LevelUpLedgerDemo() {
       </div>
 
       <div role="group" aria-labelledby={`${id}-scan`} className="mt-5">
-        <p id={`${id}-scan`} className="text-small font-semibold">Scan pass at session</p>
+        <p className="text-fine text-muted">Try it: 1. scan a pass · 2. scan the same pass again · 3. two scanners at once</p>
+        <p id={`${id}-scan`} className="mt-2 text-small font-semibold">Scan pass at session</p>
         <div className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-8">
           {SESSIONS.map((n) => {
             const done = rows.some((r) => r.session === n)
@@ -151,7 +152,7 @@ export default function LevelUpLedgerDemo() {
           onClick={() => (lastSession === null ? announce('Scan a pass first, then scan it again.') : attempt(lastSession))}>
           Scan the same pass again
         </button>
-        <button type="button" aria-disabled={upcoming === undefined || undefined} className={`btn-primary aria-disabled:hover:bg-signal aria-disabled:hover:text-on-signal ${action}`}
+        <button type="button" aria-disabled={upcoming === undefined || undefined} className={`btn-secondary aria-disabled:hover:border-line-strong ${action}`}
           onClick={() => (upcoming === undefined ? announce(`All ${SESSIONS.length} sessions are checked in. Reset to start over.`) : attempt(upcoming, true))}>
           Two scanners at once
         </button>
@@ -190,12 +191,12 @@ export default function LevelUpLedgerDemo() {
         <div className="border-t border-line pt-2">
           <div className="flex min-h-11 items-center justify-between gap-3">
             <p id={`${id}-ledger`} className="text-small font-semibold">
-              XP ledger<span className="font-normal text-muted">, newest first</span>
+              Check-ins recorded<span className="font-normal text-muted">, newest first</span>
             </p>
             <button type="button" onClick={reset} className="btn btn-secondary min-h-11 px-4">Reset</button>
           </div>
           {/* Six rows fit; past that the box scrolls, so it becomes a named, focusable region. */}
-          <div ref={box} role={overflow ? 'region' : undefined} aria-labelledby={overflow ? `${id}-ledger` : undefined} tabIndex={overflow ? 0 : undefined} className="mt-2 h-48 overflow-y-auto overscroll-contain">
+          <div ref={box} role={overflow ? 'region' : undefined} aria-labelledby={overflow ? `${id}-ledger` : undefined} tabIndex={overflow ? 0 : undefined} className="mt-2 h-48 overflow-y-auto max-sm:h-auto max-sm:overflow-visible">
             {rows.length ? (
               <ol>
                 {[...rows].reverse().map((r, i) => (
@@ -213,7 +214,7 @@ export default function LevelUpLedgerDemo() {
       </div>
 
       <p className="mt-auto pt-4 text-fine text-muted">
-        A simulation with sample XP values. The real rules run in the <span translate="no">LevelUp</span> database.
+        A simulation with sample data. It isn’t connected to <span translate="no">LevelUp</span>.
       </p>
       <p role="status" className="sr-only"><span key={message.n}>{message.text}</span></p>
     </div>

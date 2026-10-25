@@ -1,8 +1,9 @@
 import type { Project } from './types'
 
 /**
- * Every claim here is traceable to the resume, the public repository, the live site,
- * or (for private codebases) the local git history. Keep it that way when editing.
+ * Every claim here is traceable to the résumé, a public repository or a public page. SwiftDineOS and LevelUp are
+ * private codebases: describe them at the level of the résumé and their public sites, never their internals,
+ * unless the co-founder (SwiftDineOS) or the organisers (LevelUp) approve more.
  */
 export const projects: Project[] = [
   {
@@ -10,41 +11,31 @@ export const projects: Project[] = [
     name: 'SwiftDineOS',
     period: 'Jun 2026 – present',
     role: 'Co-founder',
+    kind: 'Restaurant operating system',
     place: 'Restaurant tables',
+    status: 'Company · live site at swiftdineos.in',
+    statusShort: 'Company · live site',
     tagline: 'An AI-powered operating system for restaurants.',
     summary:
-      'One platform for the whole dining loop: QR ordering at the table, a live kitchen display, table and floor management, loyalty, CRM and analytics, plus an AI assistant that answers questions from the restaurant’s own numbers.',
-    problem:
-      'Restaurants run on a patchwork: a POS here, a loyalty app there, spreadsheets everywhere. Owners learn what sold last week instead of what is selling now, and most guests order once and are never heard from again.',
+      'One platform for the dining loop: QR ordering at the table, a live kitchen display, table and floor management, loyalty, CRM and analytics, with AI suggestions for guests and owners.',
     contribution:
-      'I co-founded the company and drive product strategy and business development. I also build hands-on across the platform: ordering and table flows, payments and messaging integrations, authentication, and much of the day-to-day engineering.',
+      'I co-founded the company and drive product strategy and business development. I coordinate product development across QR ordering, real-time table management, CRM and analytics, and write code across the platform.',
+    highlightsTitle: 'Product highlights',
     highlights: [
       {
-        title: 'Multi-tenant by design',
-        body: 'Every restaurant’s data is tenant-scoped, with dedicated tests that fail closed on cross-tenant reads.',
+        title: 'From QR code to kitchen',
+        body: 'A guest scans the table’s code and orders from their phone; the order reaches the kitchen display the moment it is placed.',
       },
       {
-        title: 'A floor that stays in sync',
-        body: 'Orders, tables and staff views update over Server-Sent Events, so an order reaches the kitchen screen the moment it is placed.',
+        title: 'The table is never guessed',
+        body: 'The QR code itself identifies the table, so guests never pick one, and everyone at the table shares one dining session.',
       },
       {
-        title: 'Recommendations from real orders',
-        body: 'Add-on suggestions come from market-basket analysis (support, confidence, lift) over each restaurant’s own order history, combined with weather signals.',
-      },
-      {
-        title: 'Guarded money paths',
-        body: 'Order placement, QR scans, loyalty claims and bill settlement are idempotent and covered by race-condition tests in CI.',
+        title: 'AI where it helps',
+        body: 'Add-on suggestions offered to each guest at the right moment, and a short list of growth moves for owners each week.',
       },
     ],
-    modules: [
-      'QR ordering',
-      'Kitchen display',
-      'Table and floor management',
-      'Loyalty and CRM',
-      'Analytics',
-      'SwiftAI assistant',
-    ],
-    stack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'Prisma', 'Supabase', 'LLM APIs', 'Vitest', 'Playwright', 'Vercel'],
+    stack: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Prisma ORM'],
     live: { href: 'https://www.swiftdineos.in/', label: 'swiftdineos.in' },
     source: { unavailable: 'Private codebase' },
     shots: [
@@ -62,7 +53,7 @@ export const projects: Project[] = [
         width: 1600,
         height: 1000,
         alt: 'SwiftDineOS interactive walkthrough, step 1 of 6: a guest scans the table QR code to open a shared dining session.',
-        caption: 'Step 1 of the interactive walkthrough: a guest scans the table’s QR code',
+        caption: 'Step 1 of the public walkthrough: a guest scans the table’s QR code',
       },
       {
         src: '/work/swiftdine-mobile',
@@ -73,36 +64,43 @@ export const projects: Project[] = [
         caption: 'The landing page on a phone',
       },
     ],
-    heroShot: '/work/swiftdine-demo',
+    demo: 'Order from table 7',
+    heroCrop: {
+      alt: 'SwiftDineOS walkthrough: “One QR. The entire dining experience.” beside a table QR code.',
+      caption: 'SwiftDineOS public walkthrough, step 1',
+    },
   },
   {
     slug: 'levelup',
     name: 'LevelUp',
     period: 'Sep 2026',
     role: 'Lead developer',
+    kind: 'Event registration and dashboard',
     place: 'Event halls',
-    tagline: 'A gamified event platform for a game-development programme.',
+    status: 'Season 2026 · public welcome page and player portal online',
+    statusShort: 'Season 2026',
+    team: 'Team project with designers, who created the companion and badge art',
+    tagline: 'Registration, check-in and a live dashboard for a game-development event.',
     summary:
-      'Players choose a Pokémon-inspired starter companion that evolves as they earn XP. Volunteers check players in by scanning their digital pass, and organisers run sessions, rewards, leaderboards and credentials from a superadmin portal.',
-    problem:
-      'The organisers of LevelUp by SquadUp wanted signing up to feel like entering a game rather than filling out a Google Form, while still tracking attendance and progress reliably for every player.',
+      'Players register by choosing a Pokémon-inspired starter companion, then follow their XP, companion evolution, badges and leaderboards in a player dashboard. Volunteers check players in by scanning their digital pass, and organisers run sessions, onboarding, credentials and attendance from their own portal.',
     contribution:
-      'Lead developer on a team project, where design teammates supplied the companion and badge art. I wrote most of the code: the database schema and migrations, access control, account-management Edge Functions, the superadmin portal, the attendance flow and the test suites.',
+      'Lead developer on the team, with substantial ownership of the build: the data model, account management, the organiser portal, the QR attendance flow and the test suites.',
+    highlightsTitle: 'Highlights',
     highlights: [
       {
-        title: 'Authorisation lives in Postgres',
-        body: 'Row-level security on every table; writes go through validated security-definer functions, so route guards are a convenience, not the boundary.',
+        title: 'Three portals, one event',
+        body: 'Role-based portals for players, volunteers and organisers: onboarding, session management, credential management and attendance analytics.',
       },
       {
-        title: 'XP as an append-only ledger',
-        body: 'Levels and evolutions are computed from transactions. Unique constraints and per-player advisory locks mean a pass scanned twice, even simultaneously, awards XP once.',
+        title: 'Check-ins that count once',
+        body: 'Automated safeguards stop a pass scanned twice, even at the same moment, from recording attendance or awarding XP twice. The simulation shows the idea.',
       },
       {
-        title: 'A race condition, reproduced and fixed',
-        body: 'A manual check-in racing a QR scan could double-award XP. All 3 completion paths now share one lock, covered by integration tests.',
+        title: 'Progress players can see',
+        body: 'XP, levels, companion evolution, badges and leaderboards make every player’s progress visible.',
       },
     ],
-    stack: ['React', 'TypeScript', 'TanStack Start', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'SQL', 'Playwright'],
+    stack: ['React', 'TypeScript', 'TanStack Start', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'SQL'],
     // /levelup itself is the signed-in player portal; /levelup/welcome is the public entry point.
     live: { href: 'https://squadup-levelup.vercel.app/levelup/welcome', label: 'squadup-levelup.vercel.app' },
     source: { unavailable: 'Private repository' },
@@ -113,7 +111,7 @@ export const projects: Project[] = [
         width: 1600,
         height: 1000,
         alt: 'LevelUp “Select starter” screen: 3 original pixel-art companions, Flamir, Aquen and Verdan, beside a lake.',
-        caption: 'Choosing a starter companion, with art by the design team',
+        caption: 'Registration: choosing a starter companion (art by the design team)',
       },
       {
         src: '/work/levelup-login',
@@ -124,21 +122,30 @@ export const projects: Project[] = [
         caption: 'The player portal sign-in',
       },
     ],
-    heroShot: '/work/levelup-starter',
+    demo: 'Scan a player pass',
+    heroCrop: {
+      alt: 'LevelUp starter selection: three pixel-art companions beside a lake.',
+      caption: 'LevelUp registration (art by the design team)',
+    },
   },
   {
     slug: 'parkit',
     name: 'ParkIT',
-    period: '2026',
+    period: 'Feb – Oct 2026',
     role: 'Lead developer',
+    kind: 'Number-plate parking system',
     place: 'Parking gates',
+    status: 'Runs locally with a webcam · no hosted version',
+    statusShort: 'Runs locally',
+    team: 'Second-year OOP and DBMS team project',
     tagline: 'A camera-based parking system that reads number plates and bills automatically.',
     summary:
       'A webcam reads each vehicle’s number plate. The first read records entry and assigns a free slot; the next records exit and produces a bill, with peak-hour pricing, all from a Streamlit console.',
     problem:
       'A second-year OOP and DBMS project: replace a parking lot’s hand-kept entry and exit log with a camera, automatic slot allocation and billing.',
     contribution:
-      'Lead developer on a second-year academic team project. I wrote the original C program and the first YOLO + Streamlit version, then built the MySQL integration, OCR improvements, UI redesign and the C++17 rewrite with tests.',
+      'I wrote the original C program and the first YOLO + Streamlit version, then built the MySQL integration, OCR improvements, UI redesign and the C++17 rewrite with tests. A teammate contributed the peak-hour and weekend fee rule, the parking map, the QR receipt and Bharat-series plate support.',
+    highlightsTitle: 'Engineering decisions',
     highlights: [
       {
         title: 'Plate reads that have to agree',
@@ -161,14 +168,17 @@ export const projects: Project[] = [
     },
     shots: [],
     diagram: 'parkit',
-    heroCaption: 'The ParkIT pipeline. It runs locally with a webcam, so there’s no hosted demo.',
+    demo: 'Follow a number plate',
   },
   {
     slug: 'indiaguessr',
     name: 'IndiaGuessr',
     period: 'Jun 2026',
     role: 'Lead developer',
+    kind: 'Street View geography game',
     place: 'City streets',
+    status: 'Live · Street View map currently unavailable',
+    statusShort: 'Live · map unavailable',
     tagline: 'A GeoGuessr-style game set on the streets of India and the world.',
     summary:
       'Drop into a Google Street View panorama, read the clues (road signs, architecture, language) and pin your guess on the map. 5 rounds, up to 5,000 points each, in India or World mode.',
@@ -176,22 +186,24 @@ export const projects: Project[] = [
       'A semester-break project to learn full-stack development end to end: API design, data modelling, third-party integrations and deployment.',
     contribution:
       'Built end to end: the FastAPI backend, the React and TypeScript frontend, the tooling that builds and cleans the location dataset, and deployment across Vercel and Render.',
+    highlightsTitle: 'Engineering decisions',
     highlights: [
       {
         title: 'Scoring that rewards precision',
-        body: 'score = 5000 · e^(−d/k) over great-circle (Haversine) distance, with k = 200 km in India mode and 2,000 km in World mode.',
+        body: 'score = 5000 · e^(−d/k) over great-circle (Haversine) distance, with k = 200 km in India mode and 2,000 km in World mode.',
       },
       {
         title: 'Curated rounds, not random ones',
         body: 'Each game fills 5 category slots (urban, suburban, rural, highway, landmark) from verified locations, deduplicated by panorama and coordinates.',
       },
       {
-        title: 'Fallbacks at every layer',
-        body: 'If a stored panorama fails, the client searches outward for outdoor coverage and reports the snapped position, so scoring stays fair. Geocoding falls back to OpenStreetMap.',
+        title: 'Handling Street View coverage gaps',
+        body: 'If a stored panorama fails, the client searches outward for outdoor coverage and reports the snapped position, so scoring stays fair.',
       },
     ],
-    stack: ['FastAPI', 'Python', 'SQLAlchemy', 'SQLite', 'React', 'TypeScript', 'Tailwind CSS', 'Google Maps Platform', 'Vercel', 'Render'],
+    stack: ['FastAPI', 'Python', 'SQLite', 'REST APIs', 'React', 'TypeScript', 'Google Maps Platform', 'Vercel', 'Render'],
     live: { href: 'https://indiaguessr.vercel.app/', label: 'indiaguessr.vercel.app' },
+    notice: 'The live game’s Street View map is temporarily unavailable. The scoring demo here runs the same formula.',
     source: { href: 'https://github.com/RohitBhanose/IndiaGuessr', label: 'github.com/RohitBhanose/IndiaGuessr' },
     shots: [
       {
@@ -203,14 +215,21 @@ export const projects: Project[] = [
         caption: 'Choosing between India and World mode',
       },
     ],
-    heroShot: '/work/indiaguessr-home',
+    demo: 'Play with the scoring',
+    heroCrop: {
+      alt: 'IndiaGuessr: “Where in the world are you?” above the India Mode and World Mode cards.',
+      caption: 'IndiaGuessr home page',
+    },
   },
   {
     slug: 'leftovera',
     name: 'Leftovera',
     period: 'Jan 2026',
     role: 'Lead developer',
+    kind: 'Food-donation NGO directory',
     place: 'Kitchens and NGOs',
+    status: 'Live · 27 organisations listed',
+    statusShort: 'Live',
     tagline: 'Helping restaurants find the NGOs that redistribute surplus food.',
     summary:
       'A discovery platform with a curated directory of 27 food-redistribution organisations across Indian cities, searchable by name and filterable by city and donation category, plus guidance for restaurants on donating safely.',
@@ -218,6 +237,7 @@ export const projects: Project[] = [
       'Surplus food is often wasted not because businesses are unwilling to donate, but because they don’t know whom to contact or how to donate safely.',
     contribution:
       'Built and deployed the React single-page app: routing, directory search and filters, organisation profiles and the restaurant guidance pages.',
+    highlightsTitle: 'Engineering decisions',
     highlights: [
       {
         title: 'Filters that follow the data',
@@ -234,7 +254,7 @@ export const projects: Project[] = [
         width: 1600,
         height: 1000,
         alt: 'Leftovera home page: “Bridge the gap between surplus & scarcity”, with buttons to find NGOs and for restaurants.',
-        caption: 'The home page, with the directory inset',
+        caption: 'The home page at leftovera.vercel.app',
         tone: 'light',
       },
       {
@@ -247,18 +267,11 @@ export const projects: Project[] = [
         tone: 'light',
       },
     ],
-    heroShot: '/work/leftovera-home',
-  },
-]
-
-/** Smaller, older work kept from the previous site. */
-export const archive = [
-  {
-    slug: 'student-manager',
-    name: 'Student Manager',
-    period: '2025',
-    description: 'A Flask prototype to help students track attendance, CGPA and assignments.',
-    stack: ['Python', 'Flask', 'SQLite', 'Bootstrap'],
-    source: { href: 'https://github.com/RohitBhanose/Student-Manager-Project', label: 'github.com/RohitBhanose/Student-Manager-Project' },
+    demo: 'Filter the directory',
+    heroCrop: {
+      alt: 'Leftovera: “Bridge the gap between surplus & scarcity” with buttons to find NGOs and for restaurants.',
+      caption: 'Leftovera home page',
+      tone: 'light',
+    },
   },
 ]

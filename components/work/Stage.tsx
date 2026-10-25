@@ -1,23 +1,36 @@
 'use client'
 
-import { lazy, Suspense, useState, type ComponentType, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react'
 import type { ProjectSlug } from '@/content/types'
 
-const note = 'flex min-h-[26rem] items-center justify-center px-6 text-center text-small text-muted'
+type DemoProps = { onRetry?: () => void }
+type DemoModule = { default: ComponentType<DemoProps> }
 
-function DemoFailed() {
-  return <p className={note}>The demo couldn’t load. Check your connection and reload the page to try again.</p>
+const note = 'flex min-h-[26rem] flex-col items-center justify-center gap-4 px-6 text-center text-small text-muted'
+
+function DemoFailed({ onRetry }: DemoProps) {
+  return (
+    <div className={note}>
+      <p>The demo couldn’t load. Check your connection and try again.</p>
+      <button type="button" onClick={onRetry} className="btn btn-secondary">
+        Try again
+      </button>
+    </div>
+  )
 }
 
-// Each demo is its own chunk, fetched only when a visitor opens "Try it". React.lazy rather than next/dynamic:
-// demos never render on the server (they mount after a click), and it saves next/dynamic's ~1.5 kB runtime.
-const load = (get: () => Promise<{ default: ComponentType }>) => lazy(() => get().catch(() => ({ default: DemoFailed })))
-const demos: Record<ProjectSlug, ComponentType> = {
-  swiftdineos: load(() => import('@/components/demos/SwiftDineFlowDemo')),
-  levelup: load(() => import('@/components/demos/LevelUpLedgerDemo')),
-  parkit: load(() => import('@/components/demos/ParkitPlateDemo')),
-  indiaguessr: load(() => import('@/components/demos/GuessrScoreDemo')),
-  leftovera: load(() => import('@/components/demos/LeftoveraFilterDemo')),
+// Each demo is its own chunk, fetched only when a visitor opens it (or starts to: see `warm`).
+const loaders: Record<ProjectSlug, () => Promise<DemoModule>> = {
+  swiftdineos: () => import('@/components/demos/SwiftDineFlowDemo'),
+  levelup: () => import('@/components/demos/LevelUpLedgerDemo'),
+  parkit: () => import('@/components/demos/ParkitPlateDemo'),
+  indiaguessr: () => import('@/components/demos/GuessrScoreDemo'),
+  leftovera: () => import('@/components/demos/LeftoveraFilterDemo'),
+}
+
+function Ready({ onReady }: { onReady: () => void }) {
+  useEffect(onReady, [onReady])
+  return null
 }
 
 type Props = {
@@ -25,6 +38,7 @@ type Props = {
   name: string
   /** "Screenshots" or "Pipeline". */
   previewLabel: string
+  /** The verb that names the demo, e.g. "Order from table 7". */
   demoName: string
   /** Server-rendered screenshots or diagram. */
   preview: ReactNode
@@ -32,41 +46,78 @@ type Props = {
 
 /**
  * A project's stage: its preview, or its demo once a visitor asks for it. Both stay mounted once shown and are
- * toggled with `hidden`: the demo keeps its state, and the preview keeps its revealed diagram and chosen screenshot
- * (a remounted [data-reveal] node would never be seen by the reveal observer). Showing either replays its fade.
+ * toggled with `hidden`, so the demo keeps its state. A failed chunk can be retried without reloading the page.
  */
 export default function Stage({ slug, name, previewLabel, demoName, preview }: Props) {
   const [view, setView] = useState<'preview' | 'demo'>('preview')
   const [opened, setOpened] = useState(false)
-  const Demo = demos[slug]
+  const [attempt, setAttempt] = useState(0)
+  const [status, setStatus] = useState('')
+  const failed = useRef(false)
+
+  // A fresh lazy component per attempt: React.lazy caches a failed import forever.
+  const Demo = useMemo(
+    () =>
+      lazy(() =>
+        loaders[slug]().then(
+          (mod) => ((failed.current = false), mod),
+          (): DemoModule => ((failed.current = true), { default: DemoFailed }),
+        ),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [slug, attempt],
+  )
+  const warm = () => void loaders[slug]().catch(() => {})
   const showDemo = () => {
+    if (!opened) setStatus('Loading the demo…')
     setOpened(true)
     setView('demo')
   }
+  const retry = () => {
+    setStatus('Loading the demo…')
+    setAttempt((n) => n + 1)
+  }
+
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="segmented" role="group" aria-label={`${name}: choose a view`}>
           <button type="button" aria-pressed={view === 'preview'} onClick={() => setView('preview')} className="m-press">
             {previewLabel}
           </button>
-          <button type="button" aria-pressed={view === 'demo'} onClick={showDemo} className="m-press">
+          <button
+            type="button"
+            aria-pressed={view === 'demo'}
+            onClick={showDemo}
+            onPointerEnter={warm}
+            onFocus={warm}
+            className="m-press"
+          >
             <span aria-hidden="true" className="try-dot" />
-            Try it
+            Try it: {demoName}
           </button>
         </div>
-        {view === 'demo' ? <p className="text-small text-muted">{demoName}</p> : null}
       </div>
       <div hidden={view !== 'preview'} className="m-fade">
         {preview}
       </div>
       {opened ? (
-        <div hidden={view !== 'demo'} className="m-fade rounded-plate bg-surface shadow-[inset_0_0_0_1px_rgb(var(--line))]">
+        <section
+          hidden={view !== 'demo'}
+          aria-label={`${name} demo: ${demoName}`}
+          className="m-fade rounded-plate bg-surface shadow-[inset_0_0_0_1px_rgb(var(--line))]"
+        >
           <Suspense fallback={<p className={note}>Loading the demo…</p>}>
-            <Demo />
+            <Demo onRetry={retry} />
+            <Ready
+              onReady={() => setStatus(failed.current ? 'The demo couldn’t load. Try again below.' : `Demo ready below: ${demoName}.`)}
+            />
           </Suspense>
-        </div>
+        </section>
       ) : null}
+      <p role="status" className="sr-only">
+        {status}
+      </p>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-﻿import { spokenLanguages } from '@/content/skills'
+import { spokenLanguages } from '@/content/skills'
 import Section from '@/components/ui/Section'
 
 const offTheClock: { name: string; detail?: string }[] = [
@@ -15,19 +15,13 @@ export default function About() {
       <div className="grid gap-x-6 gap-y-14 lg:grid-cols-12">
         <div className="max-w-measure space-y-5 text-lead lg:col-span-7">
           <p>
-            I learn by building things people can use. IndiaGuessr started as a semester-break project to learn full-stack
-            development end to end. LevelUp started with a brief to make signing up for an event feel like starting a game
-            rather than filling in a form. SwiftDineOS exists because restaurants juggle a POS, a loyalty app and
-            spreadsheets at once.
+            I’m a second-year CSE (AI &amp; Data Science) student at <span className="whitespace-nowrap">MIT-WPU</span>{' '}
+            in Pune, also enrolled in IIT&nbsp;Madras’s online BS in Data Science and Applications, and a co-founder of{' '}
+            <span translate="no">SwiftDineOS</span>.
           </p>
           <p>
-            The parts I enjoy most are the unglamorous ones: the database constraint that stops XP being awarded twice,
-            the fallback for when a maps API fails. Running social media and Meta Ads campaigns at Aiera Mindlabs taught me
-            the other half of the job: getting the work in front of people.
-          </p>
-          <p className="text-muted">
-            I’m based in Pune, and I study at <span className="whitespace-nowrap">MIT-WPU</span> and, online, at
-            IIT&nbsp;Madras.
+            IndiaGuessr began as a semester-break project to learn full-stack development end to end. Before SwiftDineOS, I
+            ran social media and Meta Ads campaigns at Aiera Mindlabs and interned at bizAmica.
           </p>
         </div>
 
@@ -38,7 +32,7 @@ export default function About() {
             </h3>
             <ul>
               {offTheClock.map((item) => (
-                <li key={item.name} className="border-b border-line py-3">
+                <li key={item.name} className="about-row">
                   <p className="font-semibold">{item.name}</p>
                   {item.detail ? <p className="text-small text-muted">{item.detail}</p> : null}
                 </li>
@@ -51,7 +45,7 @@ export default function About() {
             </h3>
             <ul>
               {spokenLanguages.map((language) => (
-                <li key={language.name} className="flex items-baseline justify-between border-b border-line py-3">
+                <li key={language.name} className="about-row about-row-split">
                   <span className="font-semibold">{language.name}</span>
                   {language.native ? (
                     <span lang={language.lang} className="text-muted">

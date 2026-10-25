@@ -22,7 +22,8 @@ const SAMPLE: Org[] = [
 const unique = (data: Org[], key: 'city' | 'category') => [...new Set(data.map((org) => org[key]))].sort()
 const noun = (n: number) => (n === 1 ? 'organisation' : 'organisations')
 
-const field = 'h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-small font-normal text-ink'
+// 16px on phones: iOS Safari zooms into any field set smaller.
+const field = 'h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-base font-normal text-ink sm:text-small'
 const label = 'flex min-w-0 grow basis-40 flex-col gap-1 text-small font-medium text-ink'
 
 export default function LeftoveraFilterDemo() {
@@ -147,8 +148,8 @@ export default function LeftoveraFilterDemo() {
         ref={region}
         role="region"
         aria-label="Sample results"
-        tabIndex={0}
-        className="h-[21rem] overflow-y-auto overscroll-contain rounded-md"
+        tabIndex={-1}
+        className="h-[21rem] overflow-y-auto rounded-md max-sm:h-auto max-sm:min-h-[12rem] max-sm:overflow-visible"
       >
         {count ? (
           <ul role="list" className="grid grid-cols-[repeat(auto-fill,minmax(min(15rem,100%),1fr))] content-start gap-2">

@@ -18,13 +18,14 @@ const config: Config = {
         'line-strong': token('line-strong'),
         signal: token('signal'),
         'on-signal': token('on-signal'),
+        mark: token('mark'),
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         display: ['var(--font-display)', 'var(--font-sans)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        name: ['clamp(6rem, 2.4rem + 15vw, 11rem)', { lineHeight: '0.84', letterSpacing: '-0.012em' }],
+        name: ['clamp(3.25rem, 1.6rem + 7vw, 6.5rem)', { lineHeight: '0.9', letterSpacing: '-0.01em' }],
         h2: ['clamp(2.75rem, 1.9rem + 3.6vw, 5.25rem)', { lineHeight: '0.92', letterSpacing: '-0.008em' }],
         h3: ['clamp(2.25rem, 1.7rem + 2.3vw, 3.75rem)', { lineHeight: '0.95', letterSpacing: '-0.006em' }],
         deck: ['clamp(1.375rem, 1.15rem + 0.95vw, 2rem)', { lineHeight: '1.25', letterSpacing: '-0.005em' }],
