@@ -18,7 +18,6 @@ export const nav = [
   { id: 'work', label: 'Work' },
   { id: 'experience', label: 'Experience' },
   { id: 'skills', label: 'Skills' },
-  { id: 'education', label: 'Education' },
   { id: 'about', label: 'About' },
   { id: 'contact', label: 'Contact' },
 ] as const

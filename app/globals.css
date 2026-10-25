@@ -74,10 +74,18 @@
   --on-signal: 27 32 35; /* 10.2:1 on signal */
   --focus: 27 32 35;
 
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Motion tokens. Curves from the animate skill; durations by job, never by feel per component. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entering, hover, press */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* moving on screen */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* sheets */
+  --dur-instant: 100ms; /* colour changes, release */
+  --dur-fast: 160ms; /* press feedback, hover */
+  --dur-base: 240ms; /* swapping a panel's content */
+  --dur-slow: 420ms; /* larger reveals, disclosure */
+  --dur-scene: 700ms; /* one-off entrances (hero, plates) */
+  --stagger: 40ms; /* step between siblings in a sequence */
 
+  --road: 27 32 35; /* asphalt band for the route map */
   --header-h: 4rem;
   --font-sans: 'Barlow', 'Barlow Fallback';
   --font-display: 'Barlow Condensed', 'Barlow Condensed Fallback';
@@ -94,6 +102,7 @@
     --line-strong: 105 115 122;
     --on-signal: 20 24 26;
     --focus: 255 194 26;
+    --road: 46 54 59;
     color-scheme: dark;
   }
 }
@@ -107,6 +116,7 @@
   --line-strong: 105 115 122;
   --on-signal: 20 24 26;
   --focus: 255 194 26;
+  --road: 46 54 59;
   color-scheme: dark;
 }
 
@@ -366,6 +376,82 @@
   padding: 0.12em 0.04em 0.08em;
   margin: -0.12em -0.04em -0.08em;
 }
+.hero-char {
+  display: inline-block;
+}
+/* The headline's words, masked the same way at their own size. */
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.08em 0.02em 0.16em;
+  margin: -0.08em -0.02em -0.16em;
+}
+.hero-word > span {
+  display: inline-block;
+}
+
+/* Project selector: a preview and its info strip read as one object. */
+.hero-preview {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  border-radius: 0.875rem 0.875rem 0 0;
+  background: rgb(var(--surface));
+  box-shadow: inset 0 0 0 1px rgb(var(--line));
+}
+.hero-info {
+  min-height: 6.75rem;
+  padding: 0.85rem 1rem 0.35rem;
+  border-radius: 0 0 0.875rem 0.875rem;
+  background: rgb(var(--surface));
+  box-shadow: inset 0 0 0 1px rgb(var(--line));
+}
+
+/* The road behind the hero. */
+.road-edge,
+.road-center {
+  fill: none;
+}
+.road-edge {
+  stroke: rgb(var(--ink) / 0.09);
+  stroke-width: 1.5;
+}
+.road-center {
+  stroke: rgb(var(--signal) / 0.75);
+  stroke-width: 2.5;
+  stroke-dasharray: 16 14;
+}
+.hero-coords {
+  opacity: 0.8;
+}
+
+.scroll-cue {
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  font-size: 0.8125rem;
+  color: rgb(var(--muted));
+  transition:
+    opacity var(--dur-base) ease,
+    color var(--dur-fast) ease;
+}
+/* Gone once the page scrolls, except while it has keyboard focus: a focused control never disappears. */
+html[data-scrolled] .scroll-cue:not(:focus-visible) {
+  opacity: 0;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .scroll-cue:hover {
+    color: rgb(var(--ink));
+  }
+}
+.scroll-cue-lane {
+  width: 3px;
+  height: 1.75rem;
+  border-radius: 2px;
+  background: repeating-linear-gradient(to bottom, rgb(var(--signal)) 0 6px, transparent 6px 11px);
+}
 
 .index-layer:not([data-on]) {
   visibility: hidden;
@@ -413,10 +499,411 @@
 /* ------------------------------------------------------------------ *
  * Work
  * ------------------------------------------------------------------ */
-/* Secondary captures sit over the main one, cut out of it by a ring of page colour. */
-.phone-inset .plate,
-.detail-inset .plate {
-  outline: 6px solid rgb(var(--bg));
+/* Project explorer. Tabs, a stage that switches between screenshots and a demo, and a disclosure. */
+.explorer-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: clamp(2rem, 1rem + 3vw, 3.5rem);
+  border-top: 1px solid rgb(var(--line));
+}
+@media (min-width: 640px) {
+  .explorer-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .explorer-tabs {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+.explorer-tab {
+  position: relative;
+  min-height: 4.75rem;
+  padding: 0.9rem 1rem 0.9rem 0;
+  border-bottom: 1px solid rgb(var(--line));
+  text-align: left;
+  color: rgb(var(--muted));
+  transition: color var(--dur-fast) ease;
+}
+.explorer-tab::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 1rem;
+  height: 3px;
+  border-radius: 2px;
+  background: rgb(var(--signal));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.explorer-tab[aria-selected='true'] {
+  color: rgb(var(--ink));
+}
+.explorer-tab[aria-selected='true']::before {
+  transform: scaleX(1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .explorer-tab:hover {
+    color: rgb(var(--ink));
+  }
+}
+.js .explorer-panel:not([data-active]) {
+  display: none;
+}
+/* Without JavaScript: no tabs, every project stacked and fully expanded. */
+html:not(.js) .explorer-tabs,
+html:not(.js) .segmented {
+  display: none;
+}
+html:not(.js) .explorer-panel + .explorer-panel {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgb(var(--line));
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgb(var(--ink) / 0.06);
+}
+.segmented button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgb(var(--muted));
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out);
+}
+.segmented button[aria-pressed='true'] {
+  background: rgb(var(--surface));
+  color: rgb(var(--ink));
+  box-shadow: 0 0 0 1px rgb(var(--line));
+}
+.try-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: rgb(var(--signal));
+}
+/* Screenshot thumbnails. The chosen one gets an ink ring (signal yellow is under 3:1 on the light background). */
+.shot-thumb {
+  width: 96px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: rgb(var(--surface));
+  box-shadow: inset 0 0 0 1px rgb(var(--line));
+  transition:
+    box-shadow var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out);
+}
+.shot-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0.62;
+  transition: opacity var(--dur-fast) ease;
+}
+.shot-thumb[aria-pressed='true'] {
+  box-shadow:
+    0 0 0 2px rgb(var(--bg)),
+    0 0 0 4px rgb(var(--ink));
+}
+.shot-thumb[aria-pressed='true'] img {
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .shot-thumb:hover img {
+    opacity: 1;
+  }
+}
+
+/* Disclosure: height via grid rows (the accordion case), content inert while closed. */
+.dd-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--dur-slow) var(--ease-out),
+    visibility 0s linear var(--dur-slow);
+}
+.dd-body[data-open] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--dur-slow) var(--ease-out),
+    visibility 0s;
+}
+.dd-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.dd-icon {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+[aria-expanded='true'] > .dd-icon {
+  transform: rotate(45deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .dd-toggle:hover {
+    color: rgb(var(--muted));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dd-body,
+  .dd-body[data-open] {
+    transition: none;
+  }
+}
+html:not(.js) .dd-toggle {
+  display: none;
+}
+html:not(.js) .dd-body {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+
+/* Route map (experience and education). */
+.journey-map {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .js .journey-map {
+    display: block;
+  }
+  .js .journey-list {
+    display: none;
+  }
+}
+.road-band {
+  fill: none;
+  stroke: rgb(var(--road));
+  stroke-width: 46;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.road-lane {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.5);
+  stroke-width: 3;
+  stroke-dasharray: 18 14;
+}
+.road-trail {
+  fill: none;
+  stroke: rgb(var(--signal));
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.road-puck circle:first-child {
+  fill: rgb(var(--signal));
+  stroke: rgb(var(--road));
+  stroke-width: 4;
+}
+.road-puck circle:last-child {
+  fill: rgb(var(--road));
+}
+.route-stop {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 12rem;
+  margin-left: -6rem;
+  margin-top: -13px;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+.route-label {
+  margin-top: 1.15rem;
+  font-size: 0.9375rem;
+  color: rgb(var(--muted));
+  transition: color var(--dur-fast) ease;
+}
+.route-stop[data-selected] .route-label {
+  color: rgb(var(--ink));
+}
+.route-stop[data-selected] .route-label > span:last-child {
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--signal));
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.25em;
+}
+.stop-marker {
+  --r: 0deg;
+  --s: 1;
+  display: inline-block;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 3px solid rgb(var(--ink));
+  border-radius: 999px;
+  background: rgb(var(--surface));
+  transform: rotate(var(--r)) scale(var(--s));
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.stop-role {
+  background: rgb(var(--ink));
+  box-shadow: inset 0 0 0 3px rgb(var(--surface));
+}
+.stop-launch {
+  --r: 45deg;
+  --s: 0.82;
+  border-radius: 5px;
+  background: rgb(var(--signal));
+}
+.route-stop[data-selected] .stop-marker {
+  --s: 1.2;
+}
+.route-stop[data-selected] .stop-launch {
+  --s: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .route-stop:hover .route-label {
+    color: rgb(var(--ink));
+  }
+  .route-stop:hover .stop-marker {
+    --s: 1.12;
+  }
+  .route-stop:hover .stop-launch {
+    --s: 0.94;
+  }
+}
+.journey-list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.journey-list::before {
+  content: '';
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 10px;
+  width: 6px;
+  border-radius: 3px;
+  background: rgb(var(--road));
+}
+.journey-item summary::-webkit-details-marker {
+  display: none;
+}
+.journey-item summary .stop-marker {
+  position: relative;
+}
+.journey-item details[open] summary span:last-child > span:last-child {
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--signal));
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.25em;
+}
+
+/* Skills explorer. Solid chips have evidence on this page; dashed ones don't. */
+.filter-chip,
+.skill-chip {
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid rgb(var(--line-strong));
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgb(var(--muted));
+  transition:
+    color var(--dur-fast) ease,
+    background-color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out);
+}
+.filter-chip {
+  border-radius: 999px;
+}
+.filter-chip[aria-checked='true'] {
+  border-color: rgb(var(--ink));
+  background: rgb(var(--ink));
+  color: rgb(var(--bg));
+}
+.skill-chip {
+  border-style: dashed;
+  border-radius: 0.625rem;
+}
+.skill-chip[data-evidence] {
+  border-style: solid;
+  background: rgb(var(--surface));
+  color: rgb(var(--ink));
+}
+.skill-chip[aria-checked='true'] {
+  border-color: rgb(var(--signal));
+  background: rgb(var(--signal));
+  color: rgb(27 32 35);
+}
+@media (hover: hover) and (pointer: fine) {
+  .filter-chip:hover,
+  .skill-chip:hover {
+    border-color: rgb(var(--ink));
+    color: rgb(var(--ink));
+  }
+  .skill-chip[aria-checked='true']:hover {
+    color: rgb(27 32 35);
+  }
+  .filter-chip[aria-checked='true']:hover {
+    color: rgb(var(--bg));
+  }
+}
+.legend-chip {
+  display: inline-block;
+  width: 1.1rem;
+  height: 0.8rem;
+  border: 1px dashed rgb(var(--line-strong));
+  border-radius: 3px;
+}
+.legend-chip[data-evidence] {
+  border-style: solid;
+  background: rgb(var(--surface));
+}
+.evidence {
+  padding-top: 1.25rem;
+  border-top: 2px solid rgb(var(--ink));
+}
+.evidence-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.75rem;
+  margin: -0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  transition: background-color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .evidence-row:hover {
+    background: rgb(var(--ink) / 0.05);
+  }
+}
+.evidence-thumb {
+  flex: none;
+  width: 96px;
+  height: 60px;
+  border-radius: 0.5rem;
+  background: rgb(var(--surface));
+  box-shadow: inset 0 0 0 1px rgb(var(--line));
+  object-fit: cover;
+  object-position: top;
+}
+.evidence-thumb-empty {
+  background:
+    linear-gradient(rgb(var(--signal)) 0 0) center / 55% 3px no-repeat,
+    #1b2023;
 }
 
 /* Mostly-white captures would be the brightest thing on a dark page; take the edge off. */
@@ -489,12 +976,74 @@
     transform: translateY(14px);
   }
 }
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Motion primitives. Use these instead of one-off animations so timing stays consistent.
+ * .m-swap   — content that replaces other content (panels, previews). Set --i on siblings to stagger.
+ * .m-press  — tactile press feedback for custom controls (.btn already has it).
+ * .m-fade   — opacity-only entrance for elements that must not move. */
+.m-press {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.m-press:active {
+  transform: scale(0.97);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .m-swap {
+    animation: swap-in var(--dur-base) var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger));
+  }
+  .m-fade {
+    animation: fade var(--dur-base) ease both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-swap,
+  .m-fade {
+    animation: fade var(--dur-fast) ease both;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes lane-flow {
+  to {
+    background-position: 0 11px;
+  }
+}
 
 @media (prefers-reduced-motion: no-preference) {
-  .hero-line > span {
-    display: inline-block;
-    animation: rise 900ms var(--ease-out) both;
-    animation-delay: calc(var(--i, 0) * 90ms);
+  /* The name rises one character at a time (28ms apart, ~0.35s across the whole name). */
+  .hero-char {
+    animation: rise var(--dur-scene) var(--ease-out) both;
+    animation-delay: calc(var(--c, 0) * 28ms);
+  }
+  /* Then the headline, a word at a time. */
+  .hero-word > span {
+    animation: rise var(--dur-scene) var(--ease-out) both;
+    animation-delay: calc(160ms + var(--w, 0) * 22ms);
+  }
+  /* The road draws once, then stays still. */
+  .road-edge {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 1600ms var(--ease-in-out) 200ms forwards;
+  }
+  .road-center,
+  .hero-coords {
+    animation: fade 900ms ease 900ms both;
+  }
+  /* A few passes of the lane markings, then it rests. */
+  .scroll-cue-lane {
+    animation: lane-flow 1.2s linear 1.4s 3;
   }
   .hero-enter {
     animation: enter 700ms var(--ease-out) both;
@@ -551,7 +1100,9 @@
 
 @media print {
   [data-reveal],
-  .hero-line > span,
+  .hero-char,
+  .hero-word > span,
+  .road-edge,
   .hero-enter,
   .hero-settle,
   .hero-unveil {

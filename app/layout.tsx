@@ -64,7 +64,7 @@ export const viewport: Viewport = {
 }
 
 /** Runs before first paint so an explicit theme choice never flashes. "Auto" stays with the CSS media query. */
-const themeScript = `try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}`
+const themeScript = `document.documentElement.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}`
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

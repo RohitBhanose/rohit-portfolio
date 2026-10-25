@@ -20,7 +20,10 @@ export default function Header() {
     let frame = 0
     const update = () => {
       frame = 0
-      header.toggleAttribute('data-scrolled', window.scrollY > 8)
+      const scrolled = window.scrollY > 8
+      header.toggleAttribute('data-scrolled', scrolled)
+      // Also on the root, for page-level styles such as hiding the hero's scroll cue.
+      document.documentElement.toggleAttribute('data-scrolled', scrolled)
     }
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update)

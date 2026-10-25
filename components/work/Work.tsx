@@ -1,24 +1,23 @@
 import { archive, projects } from '@/content/projects'
 import Section from '@/components/ui/Section'
 import ExternalLink from '@/components/ui/ExternalLink'
-import FeaturedProject from './FeaturedProject'
-import ProjectEntry from './ProjectEntry'
+import ParkitDiagram from './ParkitDiagram'
+import ProjectExplorer from './ProjectExplorer'
+import ProjectPanel from './ProjectPanel'
 
 export default function Work() {
-  const [featured, ...rest] = projects
-
   return (
     <Section
       id="work"
       title="Work"
-      intro="A restaurant operating system I co-founded, and 4 projects I led. Each one links to its live site and code where they’re public, and says why when they aren’t."
+      intro="A restaurant operating system I co-founded, and 4 projects I led. Each has screenshots, the engineering behind it, and a small interactive version to try."
     >
-      <div className="space-y-[clamp(4rem,3rem+4vw,7rem)]">
-        <FeaturedProject project={featured} />
-        {rest.map((project) => (
-          <ProjectEntry key={project.slug} project={project} />
+      <ProjectExplorer
+        tabs={projects.map(({ slug, name, place }) => ({ slug, name, place }))}
+        panels={projects.map((p) => (
+          <ProjectPanel key={p.slug} project={p} diagram={p.slug === 'parkit' ? <ParkitDiagram /> : undefined} />
         ))}
-      </div>
+      />
 
       <div className="mt-[clamp(4rem,3rem+4vw,7rem)] border-t border-line pt-10">
         <h3 className="font-display text-[2rem] font-semibold leading-none">Earlier</h3>

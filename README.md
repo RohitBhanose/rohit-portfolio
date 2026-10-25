@@ -3,8 +3,9 @@
 The personal site of Rohit Bhanose: a single page that leads with real, linked work.
 
 Built with Next.js 14 (App Router, static export), React 18, TypeScript and Tailwind CSS. No animation or UI
-libraries: motion is CSS and the Web Animations API. The page ships about 7 kB (gzip) of its own JavaScript on top
-of the React runtime.
+libraries: motion is CSS and the Web Animations API. The page ships about 11 kB (gzip) of its own JavaScript on top
+of the React runtime (94 kB first load in total). Each project demo is a separate 2–3.5 kB chunk, fetched only when a
+visitor opens it.
 
 ## Run it
 
@@ -28,7 +29,7 @@ Everything on the page comes from typed files in [`content/`](content/). Change 
 | --- | --- |
 | `content/site.ts` | Name, email, social links, résumé path, page title and description, nav |
 | `content/projects.ts` | Projects: tagline, problem, your part, highlights, stack, links, screenshots, hero place and shot |
-| `content/experience.ts` | Roles and education |
+| `content/journey.ts` | Roles, study and launches in date order: the stops on the route map |
 | `content/skills.ts` | Skill groups, each pointing at the work where the skill was used |
 | `content/vcard.ts` | The contact card behind the QR code and `/contact.vcf` |
 
@@ -58,9 +59,16 @@ app/            layout (font preloads, metadata, theme bootstrap), page, 404, /c
 components/
   site/         Header (scroll state, active-section indicator, mobile <dialog> menu), ThemeToggle,
                 Footer, RevealObserver (one shared IntersectionObserver)
-  hero/         Hero, ProjectIndex (hover/focus swaps the screenshot plate)
-  work/         FeaturedProject, ProjectEntry, ParkitDiagram, Highlights, ProjectLinks, Stack
-  sections/     Experience, Skills, Education, About, Contact
+  hero/         Hero (character/word reveal), HeroRoad (drawn once), ProjectIndex (tablist that swaps
+                preview, description and links together)
+  work/         ProjectExplorer (tabs; handles every #project link on the page), ProjectPanel (server-rendered
+                panel), Stage (Screenshots / Try it, lazy demos), Gallery, Disclosure ("How it's built"),
+                ParkitDiagram, ProjectLinks, Stack
+  demos/        One self-contained, lazy-loaded demo per project, each labelled as an illustration
+  journey/      Journey (server: stop details and the phone list) and JourneyMap (client: the route map,
+                a tablist and a puck along an SVG road); a native <details> timeline on phones and without JS
+  skills/       SkillsExplorer: category and skill radio groups, evidence panel linking to the work
+  sections/     Experience (wraps Journey), Skills, About, Contact
   contact/      CopyEmail, ContactQr (encoded at build time, no client JS)
   ui/           Section, Plate, ExternalLink
 content/        all copy and data
@@ -74,10 +82,17 @@ public/fonts/   self-hosted Barlow (SIL Open Font License, see OFL.txt)
 - **Fonts** are self-hosted latin subsets with explicit preloads. Body text uses `font-display: optional` (no
   mid-view swap, so no layout shift); headings use `swap`. `next/font` isn't used because Next 14 emits no font
   preloads when the site is built on Windows.
-- **Motion** uses the easing tokens `--ease-out`, `--ease-in-out` and `--ease-drawer`. One orchestrated load
-  sequence in the hero; elsewhere motion only explains something (the ParkIT pipeline, screenshot reveals) or
-  answers an action. `prefers-reduced-motion` removes movement and keeps short fades. Content is never hidden if
-  JavaScript fails.
+- **Motion** has tokens in `app/globals.css`: easings `--ease-out` (entering, hover, press), `--ease-in-out`
+  (moving on screen), `--ease-drawer`; durations `--dur-instant` 100ms, `--dur-fast` 160ms, `--dur-base` 240ms,
+  `--dur-slow` 420ms, `--dur-scene` 700ms; `--stagger` 40ms. Reuse the primitives instead of one-off
+  animations: `.m-swap` (content replacing content; set `--i` to stagger), `.m-fade`, `.m-press`. Two one-off
+  moments: the hero load sequence and the route map's first drive. Everything else answers an action.
+  `prefers-reduced-motion` removes movement and keeps short fades. Content is never hidden if JavaScript fails.
+- **Demos** live in `components/demos/` and load only when a visitor opens "Try it" (`React.lazy`, so no
+  `next/dynamic` runtime). They use sample data, say so on screen, and never call a network service.
+- **Server first.** Copy is rendered on the server and handed to small client components as props (panels,
+  stop details, previews), so it ships as HTML rather than JavaScript. Keep new content that way: a client
+  component should hold state, not text.
 - **Images** are pre-sized WebP with explicit dimensions and `srcset` (a static export has no image optimiser).
 
 ## Deploy
@@ -91,17 +106,13 @@ public/fonts/   self-hosted Barlow (SIL Open Font License, see OFL.txt)
   Workers static-assets config; it's only used if you deploy with `npx wrangler deploy` instead.
 - **Any static host:** upload the contents of `./out`.
 
-## Before the next résumé export
+## Résumé
 
-The downloadable `public/resume.pdf` still contains a few things the site deliberately leaves out or that no
-longer resolve:
-
-- "boosting restaurant revenue by up to 40%" and "XGBoost" under SwiftDineOS (no source in the codebase or on the
-  public site)
-- ParkIT "detect vehicles": the code detects and reads number plates
-- IIT Madras heading "BS in Data Science and Programming" (the programme is Data Science and Applications)
-- Dead links: ParkIT "Website" (parkitsystem.vercel.app, 404), LevelUp "Github" (private repo, 404) and an
-  accidental `http://b.tech/` autolink on "BTech"
+`public/resume.pdf` is a corrected re-export of the résumé builder's own data in the same template. If you
+export again from the builder, make the same edits there first so they aren't lost: SwiftDineOS without the
+revenue figure and XGBoost, ParkIT described as number-plate reading with its GitHub link pointing to the
+`parkinglotsystem-cpp` branch and no Website link, LevelUp with only its `/levelup/welcome` link, the IIT Madras
+degree as "BS in Data Science and Applications", and no link on "B.Tech" in the MIT-WPU description.
 
 ## Known quirk
 
