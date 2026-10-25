@@ -2,117 +2,562 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ *
+ * Fonts. Self-hosted latin subsets of Barlow (SIL OFL, public/fonts/OFL.txt), preloaded in
+ * app/layout.tsx. next/font isn't used because Next 14 emits no font preloads when built on
+ * Windows, and `optional` without a preload means first visits never see Barlow.
+ * Body text is `optional` (never swaps mid-view, so no layout shift); the display face swaps.
+ * Fallback metrics are next/font's measured Arial overrides, so fallback text takes the same space.
+ * ------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('/fonts/barlow-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 500;
+  font-display: optional;
+  src: url('/fonts/barlow-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 600;
+  font-display: optional;
+  src: url('/fonts/barlow-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/barlow-condensed-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Barlow Fallback';
+  src: local('Arial');
+  ascent-override: 103.43%;
+  descent-override: 20.69%;
+  line-gap-override: 0%;
+  size-adjust: 96.68%;
+}
+@font-face {
+  font-family: 'Barlow Condensed Fallback';
+  src: local('Arial');
+  ascent-override: 130.73%;
+  descent-override: 26.15%;
+  line-gap-override: 0%;
+  size-adjust: 76.49%;
+}
+
+/* ------------------------------------------------------------------ *
+ * Tokens. Concrete and asphalt neutrals with one signal yellow —
+ * the palette of Pune's autos and India's commercial number plates.
+ * Values are RGB channels so Tailwind can apply alpha.
+ * ------------------------------------------------------------------ */
 :root {
-  --primary: #00D9FF;
-  --accent: #7C3AED;
-  --background: #0A0A0F;
-  --data: #10B981;
+  --bg: 237 238 234; /* concrete  #EDEEEA */
+  --surface: 255 255 255; /* paper     #FFFFFF */
+  --ink: 27 32 35; /* asphalt   #1B2023 · 14.1:1 on bg */
+  --muted: 84 92 97; /* slate     #545C61 ·  5.9:1 on bg */
+  --line: 211 214 209; /* decorative only */
+  --line-strong: 120 128 133; /* control edges · ≥ 3:1 on bg */
+  --signal: 255 194 26; /* signal    #FFC21A · fills only in light */
+  --on-signal: 27 32 35; /* 10.2:1 on signal */
+  --focus: 27 32 35;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --header-h: 4rem;
+  --font-sans: 'Barlow', 'Barlow Fallback';
+  --font-display: 'Barlow Condensed', 'Barlow Condensed Fallback';
+  color-scheme: light;
 }
 
-* {
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: 20 24 26;
+    --surface: 28 33 36;
+    --ink: 236 238 234;
+    --muted: 163 171 176;
+    --line: 43 49 53;
+    --line-strong: 105 115 122;
+    --on-signal: 20 24 26;
+    --focus: 255 194 26;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: 20 24 26;
+  --surface: 28 33 36;
+  --ink: 236 238 234;
+  --muted: 163 171 176;
+  --line: 43 49 53;
+  --line-strong: 105 115 122;
+  --on-signal: 20 24 26;
+  --focus: 255 194 26;
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    @apply bg-bg font-sans text-body text-ink antialiased;
+    font-feature-settings: 'kern', 'liga';
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: rgb(var(--signal));
+    color: rgb(27 32 35);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--focus));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  a,
+  button {
+    touch-action: manipulation;
+  }
+
+  time,
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  img {
+    color: transparent; /* hide alt text flashes while decoding */
+  }
+}
+
+/* Theme switches are instant: suppress transitions for the frame it happens on. */
+.no-transitions,
+.no-transitions * {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Components
+ * ------------------------------------------------------------------ */
+@layer components {
+  .page {
+    @apply mx-auto w-full max-w-page px-gutter;
+  }
+
+  /* Buttons: physical press, colour on hover (pointer devices only). */
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-small font-semibold;
+    transition:
+      transform 160ms var(--ease-out),
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-primary {
+    @apply bg-signal text-on-signal;
+  }
+  .btn-secondary {
+    @apply border border-line-strong text-ink;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+      background-color: rgb(var(--ink));
+      color: rgb(var(--bg));
+    }
+    .btn-secondary:hover {
+      border-color: rgb(var(--ink));
+    }
+  }
+
+  /* Text links: a signal-yellow underline that thickens on hover. */
+  .link {
+    text-decoration-line: underline;
+    text-decoration-color: rgb(var(--signal));
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.22em;
+    transition:
+      text-decoration-thickness 150ms ease,
+      text-underline-offset 150ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .link:hover,
+    .link-group:hover > .link {
+      text-decoration-thickness: 0.4em;
+      text-underline-offset: 0.06em;
+      text-decoration-skip-ink: none;
+    }
+  }
+
+  .plate {
+    @apply relative overflow-hidden rounded-plate bg-surface;
+    box-shadow: inset 0 0 0 1px rgb(var(--line));
+  }
+  .plate > img {
+    @apply block h-full w-full object-cover object-top;
+  }
+  /* The keyline sits above the image, like the border printed on a sign. */
+  .plate::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.12);
+    pointer-events: none;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Header and navigation
+ * ------------------------------------------------------------------ */
+.site-header {
+  transition: box-shadow 150ms ease;
+}
+.site-header[data-scrolled] {
+  box-shadow: 0 1px 0 rgb(var(--line));
+}
+
+.nav-link {
+  transition: color 150ms ease;
+}
+.nav-link[aria-current] {
+  color: rgb(var(--ink));
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover {
+    color: rgb(var(--ink));
+  }
+}
+
+/* One bar slides between links: moving on screen, so ease-in-out. Reduced motion keeps only the fade. */
+.nav-indicator {
+  transition: opacity 200ms ease;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .nav-indicator {
+    transition:
+      transform 250ms var(--ease-in-out),
+      opacity 200ms ease;
+  }
+}
+
+/* Quiet controls (menu, close, brand, menu links) still answer a pointer. */
+.ghost-button,
+.brand,
+.menu-link,
+.skill-ref {
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ghost-button:hover {
+    background-color: rgb(var(--ink) / 0.06);
+  }
+  .brand:hover,
+  .menu-link:hover {
+    color: rgb(var(--muted));
+  }
+  .skill-ref:hover {
+    color: rgb(var(--ink));
+    text-decoration: underline;
+    text-decoration-color: rgb(var(--signal));
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* Mobile menu: a native <dialog> (focus trap, Esc, focus return), sliding down from the header. */
+.menu-sheet {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  padding: 0 0 env(safe-area-inset-bottom);
+  border: 0;
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  overscroll-behavior: contain;
+  overflow-y: auto;
+}
+.menu-sheet::backdrop {
+  background: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .menu-sheet[open] {
+    transition:
+      opacity 200ms var(--ease-out),
+      transform 300ms var(--ease-drawer);
+  }
+  @starting-style {
+    .menu-sheet[open] {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+  .menu-sheet[open] .menu-item {
+    animation: enter 280ms var(--ease-out) both;
+    animation-delay: calc(40ms + var(--i, 0) * 30ms);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-sheet[open] {
+    transition: opacity 150ms ease;
+  }
+  @starting-style {
+    .menu-sheet[open] {
+      opacity: 0;
+    }
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+/* ------------------------------------------------------------------ *
+ * Hero
+ * ------------------------------------------------------------------ */
+/* Each word of the name is masked so it can rise into place. Padding keeps ascenders and the
+ * condensed face's overshoot inside the mask; negative margins cancel it out of the layout. */
+.hero-line {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.12em 0.04em 0.08em;
+  margin: -0.12em -0.04em -0.08em;
 }
 
-body {
-  background-color: var(--background);
-  color: #ffffff;
-  overflow-x: hidden;
+.index-layer:not([data-on]) {
+  visibility: hidden;
+}
+.index-layer > picture,
+.index-layer > img {
+  display: block;
+  height: 100%;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
+.index-row {
+  position: relative;
+  transition: color 150ms ease;
+}
+.index-row::before {
+  content: '';
+  position: absolute;
+  left: -0.875rem;
+  top: 50%;
+  width: 4px;
+  height: 1.25rem;
+  border-radius: 2px;
+  background: rgb(var(--signal));
+  transform: translateY(-50%) scaleY(0);
+  transition: transform 200ms var(--ease-out);
+}
+@media (min-width: 1024px) {
+  .index-row:not([data-active]) {
+    color: rgb(var(--muted));
+  }
+  .index-row[data-active]::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .index-row:hover {
+    color: rgb(var(--ink));
+  }
+  /* Below lg every row is already ink, so hover shows the signal bar instead of a colour change. */
+  .index-row:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: #0A0F1F;
+/* ------------------------------------------------------------------ *
+ * Work
+ * ------------------------------------------------------------------ */
+/* Secondary captures sit over the main one, cut out of it by a ring of page colour. */
+.phone-inset .plate,
+.detail-inset .plate {
+  outline: 6px solid rgb(var(--bg));
 }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #00D9FF, #7C3AED);
-  border-radius: 5px;
+/* Mostly-white captures would be the brightest thing on a dark page; take the edge off. */
+:root[data-theme='dark'] img[data-tone='light'] {
+  filter: brightness(0.82) contrast(1.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) img[data-tone='light'] {
+    filter: brightness(0.82) contrast(1.06);
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #33E5FF, #8B5CF6);
+/* ParkIT's pipeline is drawn as parking bays on asphalt, in both themes. */
+.parkit {
+  background: #1b2023;
+  color: #fff;
+}
+:root[data-theme='dark'] .parkit {
+  background: #232a2e;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .parkit {
+    background: #232a2e;
+  }
+}
+.parkit-bay {
+  border: 2px solid rgb(255 255 255 / 0.78);
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+}
+.parkit-lane {
+  display: inline-block;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, rgb(var(--signal)) 0 6px, transparent 6px 10px);
 }
 
-/* Glassmorphism utility - Minimalistic */
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* ------------------------------------------------------------------ *
+ * Motion. One orchestrated moment on load (the hero), then motion only
+ * where it explains something or answers an action.
+ * ------------------------------------------------------------------ */
+
+/* Hero load sequence: the name rises out of its line box, then the rest follows. */
+@keyframes rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes unveil {
+  from {
+    clip-path: inset(0 0 100% 0 round 0.875rem);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 0.875rem);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+/* Text blocks settle into place without fading, so they count as painted (and readable) immediately. */
+@keyframes settle {
+  from {
+    transform: translateY(14px);
+  }
 }
 
-.glass-strong {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 217, 255, 0.15);
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line > span {
+    display: inline-block;
+    animation: rise 900ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  .hero-enter {
+    animation: enter 700ms var(--ease-out) both;
+    animation-delay: calc(240ms + var(--i, 0) * 70ms);
+  }
+  .hero-settle {
+    animation: settle 800ms var(--ease-out) both;
+    animation-delay: calc(160ms + var(--i, 0) * 70ms);
+  }
+  .hero-unveil {
+    animation: unveil 900ms var(--ease-in-out) 320ms both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter,
+  .hero-unveil {
+    animation: fade 200ms ease both;
+  }
 }
 
-/* Neon text glow - Subtle */
-.neon-text {
-  text-shadow: 0 0 8px rgba(0, 217, 255, 0.5),
-               0 0 16px rgba(0, 217, 255, 0.3),
-               0 0 24px rgba(0, 217, 255, 0.2);
+/* Scroll reveal for plates and diagrams. Hidden states only exist once the
+ * reveal observer has confirmed JS is running, so no-JS visitors see everything. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Both states must be inset() shapes: inset() → none can't interpolate and would just snap.
+   * The −8px keeps the inset plates' 6px outline ring unclipped once revealed. */
+  .reveal-ready [data-reveal='plate']:not([data-visible]) {
+    clip-path: inset(-8px -8px calc(100% + 8px) -8px round 0.875rem);
+  }
+  .reveal-ready [data-reveal='plate'][data-visible] {
+    clip-path: inset(-8px round 0.875rem);
+  }
+  .reveal-ready [data-reveal='plate'] {
+    transition: clip-path 700ms var(--ease-in-out);
+  }
+  .reveal-ready [data-reveal='step']:not([data-visible]) {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .reveal-ready [data-reveal='step'] {
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 500ms var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 110ms);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready [data-reveal]:not([data-visible]) {
+    opacity: 0;
+  }
+  .reveal-ready [data-reveal] {
+    transition: opacity 200ms ease;
+  }
 }
 
-.neon-text-cyan {
-  text-shadow: 0 0 8px rgba(0, 217, 255, 0.6),
-               0 0 16px rgba(0, 217, 255, 0.4),
-               0 0 24px rgba(0, 217, 255, 0.3);
+@media print {
+  [data-reveal],
+  .hero-line > span,
+  .hero-enter,
+  .hero-settle,
+  .hero-unveil {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    animation: none !important;
+  }
 }
-
-.neon-text-purple {
-  text-shadow: 0 0 8px rgba(124, 58, 237, 0.5),
-               0 0 16px rgba(124, 58, 237, 0.3),
-               0 0 24px rgba(124, 58, 237, 0.2);
-}
-
-/* Gradient text - Futuristic */
-.gradient-text {
-  background: linear-gradient(135deg, #00D9FF 0%, #7C3AED 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-text-data {
-  background: linear-gradient(135deg, #10B981 0%, #00D9FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Section padding */
-.section-padding {
-  @apply py-20 px-4 sm:px-6 lg:px-8;
-}
-
-/* Container */
-.container-custom {
-  @apply max-w-7xl mx-auto;
-}
-
-/* Smooth reveal animation */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-

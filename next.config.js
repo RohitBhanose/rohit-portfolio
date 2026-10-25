@@ -1,13 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Produce static export (./out) on `next build`
+  // Static export: `next build` writes the whole site to ./out, deployable to any static host.
   output: 'export',
-
   reactStrictMode: true,
-
-  images: {
-    domains: ['images.unsplash.com'],
-  },
+  poweredByHeader: false,
 }
 
 module.exports = nextConfig

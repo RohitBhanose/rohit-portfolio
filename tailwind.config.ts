@@ -1,79 +1,58 @@
 import type { Config } from 'tailwindcss'
 
+/** Colours are CSS variables (RGB channels) defined in app/globals.css, so both themes share one set of class names. */
+const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`
+
 const config: Config = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './content/**/*.ts'],
+  // `hover:` utilities only on devices that can hover, so a tapped link doesn't stay "hovered" on touch.
+  future: { hoverOnlyWhenSupported: true },
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: '#00D9FF',
-          light: '#33E5FF',
-          dark: '#00B8CC',
-        },
-        accent: {
-          DEFAULT: '#7C3AED',
-          light: '#8B5CF6',
-          dark: '#6D28D9',
-        },
-        background: {
-          DEFAULT: '#0A0A0F',
-          light: '#111118',
-          dark: '#050508',
-        },
-        neon: {
-          blue: '#00D9FF',
-          purple: '#7C3AED',
-          cyan: '#06B6D4',
-          pink: '#EC4899',
-        },
-        data: {
-          DEFAULT: '#10B981',
-          light: '#34D399',
-          dark: '#059669',
-        },
+        bg: token('bg'),
+        surface: token('surface'),
+        ink: token('ink'),
+        muted: token('muted'),
+        line: token('line'),
+        'line-strong': token('line-strong'),
+        signal: token('signal'),
+        'on-signal': token('on-signal'),
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'neon-glow': 'linear-gradient(135deg, #6C63FF 0%, #00E5FF 100%)',
+      fontFamily: {
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-sans)', 'system-ui', 'sans-serif'],
       },
-      boxShadow: {
-        'neon': '0 0 15px rgba(0, 217, 255, 0.3), 0 0 30px rgba(124, 58, 237, 0.2)',
-        'neon-sm': '0 0 8px rgba(0, 217, 255, 0.25)',
-        'neon-lg': '0 0 25px rgba(0, 217, 255, 0.4), 0 0 50px rgba(124, 58, 237, 0.3)',
-        'data': '0 0 12px rgba(16, 185, 129, 0.3)',
+      fontSize: {
+        name: ['clamp(6rem, 2.4rem + 15vw, 11rem)', { lineHeight: '0.84', letterSpacing: '-0.012em' }],
+        h2: ['clamp(2.75rem, 1.9rem + 3.6vw, 5.25rem)', { lineHeight: '0.92', letterSpacing: '-0.008em' }],
+        h3: ['clamp(2.25rem, 1.7rem + 2.3vw, 3.75rem)', { lineHeight: '0.95', letterSpacing: '-0.006em' }],
+        deck: ['clamp(1.375rem, 1.15rem + 0.95vw, 2rem)', { lineHeight: '1.25', letterSpacing: '-0.005em' }],
+        lead: ['clamp(1.125rem, 1.06rem + 0.28vw, 1.3125rem)', { lineHeight: '1.55' }],
+        body: ['1.0625rem', { lineHeight: '1.65' }],
+        small: ['0.9375rem', { lineHeight: '1.5' }],
+        fine: ['0.8125rem', { lineHeight: '1.45' }],
       },
-      animation: {
-        'glow': 'glow 2s ease-in-out infinite alternate',
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-neon': 'pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      maxWidth: {
+        page: '78rem',
+        measure: '65ch',
       },
-      keyframes: {
-        glow: {
-          '0%': { boxShadow: '0 0 20px rgba(108, 99, 255, 0.5)' },
-          '100%': { boxShadow: '0 0 30px rgba(108, 99, 255, 0.8), 0 0 60px rgba(0, 229, 255, 0.5)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' },
-        },
-        'pulse-neon': {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.7' },
-        },
+      spacing: {
+        gutter: 'clamp(1rem, 4vw, 3rem)',
+        section: 'clamp(3.5rem, 2rem + 4.5vw, 6.5rem)',
       },
-      backdropBlur: {
-        xs: '2px',
+      borderRadius: {
+        plate: '0.875rem',
+      },
+      transitionTimingFunction: {
+        DEFAULT: 'ease',
+        out: 'cubic-bezier(0.23, 1, 0.32, 1)',
+        'in-out': 'cubic-bezier(0.77, 0, 0.175, 1)',
+        drawer: 'cubic-bezier(0.32, 0.72, 0, 1)',
       },
     },
   },
   plugins: [],
 }
+
 export default config
-
-
-

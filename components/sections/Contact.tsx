@@ -1,201 +1,79 @@
-﻿/* eslint-disable react/no-unescaped-entities */
-'use client'
-
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import { Mail, Linkedin, Github, Twitter, Send, MapPin, Phone } from 'lucide-react'
+﻿import { site } from '@/content/site'
 import Section from '@/components/ui/Section'
-import Card from '@/components/ui/Card'
-import Button from '@/components/ui/Button'
+import ExternalLink from '@/components/ui/ExternalLink'
+import ContactQr from '@/components/contact/ContactQr'
+import CopyEmail from '@/components/contact/CopyEmail'
 
-const socialLinks = [
-  { icon: Github, href: 'https://github.com/RohitBhanose', label: 'GitHub' },
-  { icon: Linkedin, href: 'https://www.linkedin.com/in/rohit-bhanose/', label: 'LinkedIn' },
-  { icon: Mail, href: 'mailto:rohit.bhanose@gmail.com', label: 'Email' },
-]
+const mailto = (subject: string) => `mailto:${site.email}?subject=${encodeURIComponent(subject)}`
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate form submission
-    setTimeout(() => {
-      alert('Thank you for your message! I will get back to you soon.')
-      setFormData({ name: '', email: '', message: '' })
-      setIsSubmitting(false)
-    }, 1000)
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
   return (
-    <Section id="contact" title="Get In Touch" subtitle="Let's Connect">
-      <div ref={ref} className="grid md:grid-cols-2 gap-8">
-        {/* Left: Contact Info */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <Card className="h-full" glow>
-            <h3 className="text-2xl font-bold mb-6 gradient-text">Contact Information</h3>
-            <p className="text-gray-300 mb-8">
-              I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
-            </p>
+    <Section
+      id="contact"
+      title="Contact"
+      intro="Email is the fastest way to reach me about software engineering and AI/ML internships, collaborations, or SwiftDineOS for your restaurant."
+    >
+      <div className="grid gap-x-6 gap-y-14 lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-8">
+          <a
+            id="contact-email"
+            href={`mailto:${site.email}`}
+            className="link inline font-display text-[clamp(2rem,0.75rem+4.4vw,4.25rem)] font-semibold leading-[1.1]"
+          >
+            {/* Break after the @ if it has to wrap, never mid-word. */}
+            {site.email.split('@')[0]}@<wbr />
+            {site.email.split('@')[1]}
+          </a>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href={`mailto:${site.email}`} className="btn btn-primary">
+              Email me
+            </a>
+            <CopyEmail email={site.email} targetId="contact-email" />
+          </div>
 
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-primary/20">
-                  <Mail className="text-primary" size={20} />
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Email</p>
-                  <a
-                    href="mailto:rohit.bhanose@gmail.com"
-                    className="text-white hover:text-accent transition-colors"
-                  >
-                    rohit.bhanose@gmail.com
-                  </a>
-                </div>
-              </div>
+          <ul className="mt-14 grid gap-x-8 border-t border-line sm:grid-cols-2">
+            <li className="border-b border-line py-3">
+              <a href={mailto('Internship enquiry')} className="link inline-flex min-h-11 items-center font-semibold">
+                Internship enquiry
+              </a>
+              <p className="text-small text-muted">Opens an email with the subject filled in.</p>
+            </li>
+            <li className="border-b border-line py-3">
+              <a href={mailto('SwiftDineOS partnership')} className="link inline-flex min-h-11 items-center font-semibold">
+                SwiftDineOS for your restaurant
+              </a>
+              <p className="text-small text-muted">Or see the product at swiftdineos.in.</p>
+            </li>
+            <li className="border-b border-line py-3">
+              <ExternalLink href={site.social.linkedin} className="link inline-flex min-h-11 items-center font-semibold">
+                LinkedIn
+              </ExternalLink>
+              <p className="text-small text-muted" translate="no">
+                in/rohit-bhanose
+              </p>
+            </li>
+            <li className="border-b border-line py-3">
+              <ExternalLink href={site.social.github} className="link inline-flex min-h-11 items-center font-semibold">
+                GitHub
+              </ExternalLink>
+              <p className="text-small text-muted" translate="no">
+                RohitBhanose
+              </p>
+            </li>
+          </ul>
+        </div>
 
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-accent/20">
-                  <Phone className="text-accent" size={20} />
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Phone</p>
-                  <p className="text-white">8788457198</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-primary/20">
-                  <MapPin className="text-primary" size={20} />
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Location</p>
-                  <p className="text-white">Pune, India</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Social Links */}
-            <div>
-              <p className="text-gray-400 text-sm mb-4">Follow Me</p>
-              <div className="flex gap-4">
-                {socialLinks.map((social) => {
-                  const Icon = social.icon
-                  return (
-                    <motion.a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 glass rounded-lg hover:bg-primary/20 transition-colors group"
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Icon
-                        className="text-gray-400 group-hover:text-primary transition-colors"
-                        size={20}
-                      />
-                    </motion.a>
-                  )
-                })}
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-
-        {/* Right: Contact Form */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <Card className="h-full" glow>
-            <h3 className="text-2xl font-bold mb-6 gradient-text">Send a Message</h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 glass rounded-lg border border-primary/30 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 text-white bg-transparent transition-all"
-                  placeholder="Your Name"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 glass rounded-lg border border-primary/30 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 text-white bg-transparent transition-all"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 glass rounded-lg border border-primary/30 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 text-white bg-transparent transition-all resize-none"
-                  placeholder="Your message here..."
-                />
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                disabled={isSubmitting}
-                className="w-full flex items-center justify-center gap-2"
-              >
-                <Send size={20} />
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </Button>
-            </form>
-          </Card>
-        </motion.div>
+        <figure className="lg:col-span-3 lg:col-start-10">
+          <div className="hidden max-w-[15rem] rounded-plate bg-white p-2 shadow-[inset_0_0_0_1px_rgb(var(--line))] lg:block">
+            <ContactQr />
+          </div>
+          <figcaption className="text-small text-muted lg:mt-4">
+            <p className="hidden lg:block">Scan with your phone to save my contact card.</p>
+            <a href="/contact.vcf" download="Rohit-Bhanose.vcf" className="link inline-flex min-h-11 items-center font-semibold text-ink">
+              Download contact card (.vcf)
+            </a>
+          </figcaption>
+        </figure>
       </div>
     </Section>
   )

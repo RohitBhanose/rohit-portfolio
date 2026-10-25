@@ -1,6 +1,8 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    // Static export has no image optimiser, so screenshots are pre-sized WebP served through <img> with
+    // explicit width, height and srcset (see components/ui/Plate.tsx).
+    "@next/next/no-img-element": "off"
+  }
 }
-
-
-
