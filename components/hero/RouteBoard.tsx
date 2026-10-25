@@ -8,6 +8,8 @@ export type BoardRow = {
   kind: string
   role: string
   status: string
+  /** The flagship's marker ("Flagship"); it sits on the name line, so the row is no taller. */
+  flag?: string
   caption: string
   /** Server-rendered crop or diagram for the preview. */
   preview: ReactNode
@@ -44,14 +46,25 @@ export default function RouteBoard({ rows }: { rows: BoardRow[] }) {
               href={`#${row.slug}`}
               className="board-row"
               data-active={i === active ? '' : undefined}
+              data-flagship={row.flag ? '' : undefined}
               onPointerEnter={(e) => e.pointerType === 'mouse' && choose(i, INTENT_DELAY)}
               onFocus={() => choose(i, 0)}
             >
               <span aria-hidden="true" className="board-stop" />
               <span className="min-w-0 flex-1">
-                <span className="flex items-baseline justify-between gap-3">
-                  <span className="board-name" translate="no">
-                    {row.name}
+                {/* Wraps only when the flagship plate leaves no room for the role (phones under ~360px). */}
+                <span className="flex flex-wrap items-baseline justify-between gap-x-3">
+                  <span className="flex min-w-0 items-baseline gap-2">
+                    <span className="board-name" translate="no">
+                      {row.name}
+                    </span>
+                    {row.flag ? (
+                      <span className="flag-plate">
+                        <span className="sr-only">, </span>
+                        {row.flag}
+                        <span className="sr-only">,</span>
+                      </span>
+                    ) : null}
                   </span>
                   <span className="board-role">{row.role}</span>
                 </span>

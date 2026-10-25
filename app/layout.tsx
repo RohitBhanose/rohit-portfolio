@@ -80,7 +80,12 @@ const person = {
   url: site.url,
   email: `mailto:${site.email}`,
   jobTitle: 'Co-founder, SwiftDineOS',
-  worksFor: { '@type': 'Organization', name: 'SwiftDineOS', url: site.social.swiftdine },
+  worksFor: {
+    '@type': 'Organization',
+    name: 'SwiftDineOS',
+    url: site.social.swiftdine,
+    description: 'An AI-powered, cloud-based restaurant operating system.',
+  },
   affiliation: [
     { '@type': 'CollegeOrUniversity', name: 'MIT World Peace University' },
     { '@type': 'CollegeOrUniversity', name: 'IIT Madras' },

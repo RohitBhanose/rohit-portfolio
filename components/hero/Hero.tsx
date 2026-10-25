@@ -74,6 +74,7 @@ export default function Hero() {
     kind: project.kind,
     role: project.role,
     status: project.statusShort,
+    flag: project.flagship?.label,
     caption: project.heroCrop?.caption ?? `${project.name} pipeline (it runs locally with a webcam)`,
     preview: project.heroCrop ? <Crop project={project} first={i === 0} /> : <ParkitDiagram compact />,
   }))

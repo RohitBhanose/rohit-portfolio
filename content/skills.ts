@@ -37,7 +37,7 @@ export const skillGroups: SkillGroup[] = [
       { name: 'FastAPI', usedIn: ['indiaguessr'] },
       { name: 'REST APIs', usedIn: ['indiaguessr'] },
       { name: 'Supabase', usedIn: ['swiftdineos', 'levelup'] },
-      { name: 'PostgreSQL', usedIn: ['levelup'] },
+      { name: 'PostgreSQL', usedIn: ['swiftdineos', 'levelup'] },
       { name: 'Prisma ORM', usedIn: ['swiftdineos'] },
       { name: 'MySQL', usedIn: ['parkit'] },
       { name: 'SQLite', usedIn: ['indiaguessr'] },

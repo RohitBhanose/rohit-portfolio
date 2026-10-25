@@ -4,6 +4,10 @@ import type { Project } from './types'
  * Every claim here is traceable to the résumé, a public repository or a public page. SwiftDineOS and LevelUp are
  * private codebases: describe them at the level of the résumé and their public sites, never their internals,
  * unless the co-founder (SwiftDineOS) or the organisers (LevelUp) approve more.
+ *
+ * SwiftDineOS is the flagship. Its copy is Rohit's own account of the product, with each feature area and the
+ * stack checked against the codebase's manifests and the public site. It describes capabilities and his part in
+ * them, never adoption, customers or outcomes.
  */
 export const projects: Project[] = [
   {
@@ -15,27 +19,39 @@ export const projects: Project[] = [
     place: 'Restaurant tables',
     status: 'Company · live site at swiftdineos.in',
     statusShort: 'Company · live site',
-    tagline: 'An AI-powered operating system for restaurants.',
+    tagline: 'An AI-powered, cloud-based operating system for restaurants.',
     summary:
-      'One platform for the dining loop: QR ordering at the table, a live kitchen display, table and floor management, loyalty, CRM and analytics, with AI suggestions for guests and owners.',
+      'SwiftDineOS is a cloud-based restaurant operating system that unifies digital ordering, restaurant operations, customer intelligence, loyalty and business analytics in one platform. Rather than treating QR ordering as a standalone feature, I helped shape and develop an integrated product that connects customer interactions with restaurant workflows, customer retention and business performance.',
     contribution:
-      'I co-founded the company and drive product strategy and business development. I coordinate product development across QR ordering, real-time table management, CRM and analytics, and write code across the platform.',
-    highlightsTitle: 'Product highlights',
+      'As co-founder, I drive product strategy and business development and work hands-on in full-stack product development. SwiftDineOS is a shared effort: the six areas below are ones I’ve worked on, not features I built alone.',
+    highlightsTitle: 'What I’ve helped build',
     highlights: [
       {
-        title: 'From QR code to kitchen',
-        body: 'A guest scans the table’s code and orders from their phone; the order reaches the kitchen display the moment it is placed.',
+        title: 'Ordering & service',
+        body: 'QR menus and ordering for table and counter service, waiter assistance, more than one order per table, and flexible checkout, including split bills.',
       },
       {
-        title: 'The table is never guessed',
-        body: 'The QR code itself identifies the table, so guests never pick one, and everyone at the table shares one dining session.',
+        title: 'Restaurant operations',
+        body: 'Real-time table management and status tracking for managers, payment and cashier workflows, and kitchen order queues that link each order to fulfilment and service.',
       },
       {
-        title: 'AI where it helps',
-        body: 'Add-on suggestions offered to each guest at the right moment, and a short list of growth moves for owners each week.',
+        title: 'Customer intelligence & CRM',
+        body: 'Customer profiles, a CRM and RFM-based customer tiers, to help restaurants understand buying behaviour, recognise returning customers and plan retention.',
+      },
+      {
+        title: 'AI & loyalty',
+        body: 'Loyalty and rewards, AI-assisted recommendations, and customer experiences that take the restaurant’s own context into account.',
+      },
+      {
+        title: 'Business intelligence & growth',
+        body: 'Analytics for owners that connect day-to-day operations and customer insight with the restaurant’s performance, to inform growth decisions.',
+      },
+      {
+        title: 'End-to-end SaaS product development',
+        body: 'Product strategy, feature planning, technical coordination and development across the customer, staff, restaurant-owner and platform-administration experiences.',
       },
     ],
-    stack: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Prisma ORM'],
+    stack: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'Supabase', 'Prisma ORM'],
     live: { href: 'https://www.swiftdineos.in/', label: 'swiftdineos.in' },
     source: { unavailable: 'Private codebase' },
     shots: [
@@ -65,9 +81,30 @@ export const projects: Project[] = [
       },
     ],
     demo: 'Order from table 7',
+    demoNote:
+      'One part of the system: a guest’s order from table 7 through the kitchen display to the bill. It runs on sample data, so no order reaches a restaurant and no payment is taken.',
     heroCrop: {
       alt: 'SwiftDineOS walkthrough: “One QR. The entire dining experience.” beside a table QR code.',
       caption: 'SwiftDineOS public walkthrough, step 1',
+    },
+    flagship: {
+      label: 'Flagship',
+      roleDetail: 'Co-founder · Product strategy and full-stack product development',
+      areasIntro: 'Six areas of one platform, designed around the same tables, orders and customers rather than as separate tools.',
+      idea: {
+        title: 'The core idea',
+        lead: 'One operating system, not a collection of disconnected tools.',
+        body: 'SwiftDineOS connects digital ordering, restaurant operations, customer intelligence, loyalty and analytics, so a customer’s interactions can inform both the service happening now and the restaurant’s longer-term decisions.',
+        loopLabel: 'The loop it’s designed around',
+        loop: [
+          { name: 'Order', detail: 'QR ordering at the table or counter' },
+          { name: 'Service', detail: 'Kitchen, floor and cashier' },
+          { name: 'Customer', detail: 'Profile, CRM and loyalty' },
+          { name: 'Owner', detail: 'Analytics and growth decisions' },
+          { name: 'Next visit', detail: 'Recommendations and rewards' },
+        ],
+        caveat: 'A product-design view of how the areas fit together, not a map of every live data flow.',
+      },
     },
   },
   {

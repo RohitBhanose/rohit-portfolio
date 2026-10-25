@@ -40,6 +40,8 @@ type Props = {
   previewLabel: string
   /** The verb that names the demo, e.g. "Order from table 7". */
   demoName: string
+  /** What the demo covers, shown under the buttons and read as the demo button's description. */
+  demoNote?: string
   /** Server-rendered screenshots or diagram. */
   preview: ReactNode
 }
@@ -48,7 +50,7 @@ type Props = {
  * A project's stage: its preview, or its demo once a visitor asks for it. Both stay mounted once shown and are
  * toggled with `hidden`, so the demo keeps its state. A failed chunk can be retried without reloading the page.
  */
-export default function Stage({ slug, name, previewLabel, demoName, preview }: Props) {
+export default function Stage({ slug, name, previewLabel, demoName, demoNote, preview }: Props) {
   const [view, setView] = useState<'preview' | 'demo'>('preview')
   const [opened, setOpened] = useState(false)
   const [attempt, setAttempt] = useState(0)
@@ -91,12 +93,18 @@ export default function Stage({ slug, name, previewLabel, demoName, preview }: P
             onClick={showDemo}
             onPointerEnter={warm}
             onFocus={warm}
+            aria-describedby={demoNote ? `${slug}-demo-note` : undefined}
             className="m-press"
           >
             <span aria-hidden="true" className="try-dot" />
             Try it: {demoName}
           </button>
         </div>
+        {demoNote ? (
+          <p id={`${slug}-demo-note`} className="demo-note basis-full max-w-measure text-small text-muted">
+            {demoNote}
+          </p>
+        ) : null}
       </div>
       <div hidden={view !== 'preview'} className="m-fade">
         {preview}

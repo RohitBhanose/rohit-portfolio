@@ -28,7 +28,7 @@ Everything on the page comes from typed files in [`content/`](content/). Change 
 | --- | --- |
 | `content/site.ts` | Name, positioning line, availability, links, title, description, nav |
 | `content/screening.ts` | Class year and CGPA, with their approval switches (server-only, so unapproved values never ship) |
-| `content/projects.ts` | The five featured projects: status, role, team, contribution, highlights, stack, links, screenshots, demo name, hero crop |
+| `content/projects.ts` | The five featured projects: status, role, team, contribution, highlights, stack, links, screenshots, demo name, hero crop. SwiftDineOS also has a `flagship` block (role line, feature-area intro, core idea), and its `highlights` render as the six numbered feature areas |
 | `content/experience.ts` | Roles and education, newest first |
 | `content/skills.ts` | Skill groups, each skill pointing at the project or role where it was used |
 | `content/vcard.ts` | The contact card behind the QR code and `/contact.vcf` |

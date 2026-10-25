@@ -27,8 +27,8 @@ export const experience: Entry[] = [
     period: 'Jun 2026 – present',
     where: 'Self-employed · on-site, Pune',
     points: [
-      'Co-founded SwiftDineOS, an AI-powered restaurant operating system; I drive product strategy and business development.',
-      'Coordinate product development for QR ordering, real-time table management, CRM and analytics.',
+      'Co-founded SwiftDineOS, an AI-powered, cloud-based restaurant operating system; I drive product strategy and business development and work on full-stack product development.',
+      'Helped connect QR ordering, restaurant operations, CRM with RFM-based customer tiers, loyalty, AI-assisted recommendations and business analytics across the customer, staff, owner and admin experiences.',
     ],
     project: 'swiftdineos',
   },

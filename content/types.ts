@@ -33,6 +33,25 @@ export type Shot = {
 
 export type Highlight = { title: string; body: string }
 
+/** Extra editorial depth for the one flagship project. Its `highlights` are its feature areas. */
+export type Flagship = {
+  /** Shown on the flagship marker in the hero and the project header. */
+  label: string
+  /** The facts strip's role line; `role` stays short for the hero board. */
+  roleDetail: string
+  /** One line under the feature areas' heading. */
+  areasIntro: string
+  /** The product idea that ties the areas together: a design insight, never a claim that every flow is live. */
+  idea: {
+    title: string
+    lead: string
+    body: string
+    loopLabel: string
+    loop: { name: string; detail: string }[]
+    caveat: string
+  }
+}
+
 /** A 2.4:1 crop of an already-public screen, shown in the hero's route board (public/work/hero/<slug>-600|1200.webp). */
 export type HeroCrop = { alt: string; caption: string; tone?: 'light' }
 
@@ -72,7 +91,10 @@ export type Project = {
   diagram?: 'parkit'
   /** The verb that names the interactive demo, shown before it is opened. */
   demo: string
+  /** One line beside the demo button saying what the demo covers (and what it doesn't). */
+  demoNote?: string
   heroCrop?: HeroCrop
+  flagship?: Flagship
 }
 
 export type SkillItem = { name: string; usedIn: SkillRef[] }
